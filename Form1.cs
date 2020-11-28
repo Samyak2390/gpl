@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using gpl.Compiler;
+using System.Collections.Immutable;
 
 namespace gpl
 {
@@ -33,23 +35,9 @@ namespace gpl
             this.changeStartPos();
         }
 
-     
-        private void canvas_MouseDown(object sender, MouseEventArgs e)
-        {
-            Bitmap point = new Bitmap(canvas.Width, canvas.Height);
-            g = Graphics.FromImage(point);
-            g.FillEllipse(this.sb, e.X, e.Y, 10, 10);
-
-            
-            canvas.Image = point;
-
-        }
-
         private void canvas_Paint(object sender, PaintEventArgs e)
         {
             Graphics g = e.Graphics;
-            //sb = new SolidBrush(ForeColor);
-            //g.FillEllipse(sb, 5, 5, 20, 20);
             g.DrawImageUnscaled(this.canvasBitmap, 0, 0);
         }
 
@@ -65,7 +53,15 @@ namespace gpl
         {
             if(e.KeyChar == (char)13)
             {
-                string[] lines = cli.Text.Split('\n');
+                Lexer lex = new Lexer(cli.Text, true);
+                ImmutableArray<SyntaxToken> tokenss = lex.GetTokens();
+                var length = tokenss.Length;
+            }
+        }
+
+        /*
+         * 
+         * string[] lines = cli.Text.Split('\n');
                 int length = lines.Length;
                 string token = lines[length - 2];
                 string[] tokens = token.Split(' ');
@@ -87,8 +83,6 @@ namespace gpl
                     this.changeStartPos();
                     //Refresh();//From Form class
                 }
-
-            }
-        }
+         */
     }
 }

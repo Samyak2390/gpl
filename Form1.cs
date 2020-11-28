@@ -53,9 +53,8 @@ namespace gpl
         {
             if(e.KeyChar == (char)13)
             {
-                Lexer lex = new Lexer(cli.Text, true);
-                ImmutableArray<SyntaxToken> tokenss = lex.GetTokens();
-                var length = tokenss.Length;
+                SyntaxTree tree = new SyntaxTree(cli.Text, true);
+                tree.ShowTree();
             }
         }
 

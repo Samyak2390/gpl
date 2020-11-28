@@ -15,9 +15,7 @@ namespace gpl.Compiler
         private SyntaxKind _kind;
         private object _value;
 
-        private readonly ImmutableArray<SyntaxToken> _tokens;
-
-        public Lexer(string text, bool fromCli = false)
+        public Lexer(string text, bool fromCli)
         {
             if(fromCli)
             {

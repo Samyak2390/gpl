@@ -62,6 +62,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Compiler\MoveToStatementSyntax.cs" />
+    <Compile Include="Compiler\LiteralExpressionSyntax.cs" />
+    <Compile Include="Compiler\ExpressionSyntax.cs" />
+    <Compile Include="Compiler\StatementSyntax.cs" />
+    <Compile Include="Compiler\SyntaxNode.cs" />
+    <Compile Include="Compiler\CompilationUnitSyntax.cs" />
+    <Compile Include="Compiler\SyntaxTree.cs" />
+    <Compile Include="Compiler\Parser.cs" />
     <Compile Include="Compiler\SyntaxToken.cs" />
     <Compile Include="Compiler\SyntaxKind.cs" />
     <Compile Include="Compiler\Lexer.cs" />

@@ -18,9 +18,14 @@ namespace gpl.Compiler
         MoveToKeyword,
         DrawToKeyword,
 
+        //Statements
+        MoveToStatement,
+        DrawToExpression,
+
+        //Nodes
+        CompilationUnit,
+
         //Expressions
-        PointExpression,
-        MoveToExpression,
-        DrawToExpression
+        LiteralExpression,
     }
 }

@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Collections;
 using gpl.Compiler.Syntax;
+using System.Text.RegularExpressions;
+using System.Drawing;
 
 namespace gpl.Compiler
 {
@@ -37,6 +39,7 @@ namespace gpl.Compiler
                             Diagnostics.Add($"Two Parameters required for <{_tokens[0]}>.");
                         }
                         break;
+
                     case SyntaxKind.DrawToStatement:
                         try
                         {
@@ -48,6 +51,30 @@ namespace gpl.Compiler
                             Diagnostics.Add($"Two Parameters required for <{_tokens[0]}>.");
                         }
                         break;
+
+                    case SyntaxKind.PenStatement:
+                        try
+                        {
+                            if(Regex.IsMatch(_tokens[1], @"^[a-zA-Z]+$")){
+                                string color = _tokens[1];
+                                PenStatementSyntax pen = new PenStatementSyntax(SyntaxKind.PenStatement, color);
+                                if(pen.Color == Color.Black)
+                                {
+                                    Diagnostics.Add($"{color} not found.");
+                                }
+                                return pen;
+                            }
+                            else
+                            {
+                                Diagnostics.Add("Color name must be alphabetic.");
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            Diagnostics.Add($"<{_tokens[0]}> requires a color parameter.");
+                        }
+                        break;
+
                 }
             }
             else

@@ -32,6 +32,12 @@ namespace gpl.Visuals
                     var drawto = (DrawToStatementSyntax)_statement;
                     _canvas.DrawTo(drawto.Point[0], drawto.Point[1]);
                     break;
+
+                case SyntaxKind.PenStatement:
+                    var pen = (PenStatementSyntax)_statement;
+                    _canvas.SetPen(pen.Color);
+                    break;
+
             }
         }
     }

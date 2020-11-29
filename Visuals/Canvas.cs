@@ -42,9 +42,9 @@ namespace gpl.Visuals
             MoveTo(X, Y);
         }
 
-        public Pen GetPen(Color color, int strokeThickness)
+        public void SetPen(Color color)
         {
-            return new Pen(color, strokeThickness);
+            _pen = new Pen(color);
         }
 
         public Graphics GetSetGraphics 

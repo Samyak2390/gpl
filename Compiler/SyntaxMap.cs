@@ -20,6 +20,7 @@ namespace gpl.Compiler
                 {"drawto", SyntaxKind.DrawToStatement },
                 {"reset", SyntaxKind.ResetStatement },
                 {"clear", SyntaxKind.ClearStatement },
+                {"pen", SyntaxKind.PenStatement },
             };
         }
 

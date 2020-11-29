@@ -12,6 +12,7 @@ namespace gpl.Compiler
         MoveToStatement,
         DrawToStatement,
         ResetStatement,
-        ClearStatement
+        ClearStatement,
+        PenStatement,
     }
 }

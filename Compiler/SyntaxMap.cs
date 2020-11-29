@@ -16,7 +16,8 @@ namespace gpl.Compiler
         {
             Commands = new Dictionary<string, SyntaxKind>
             {
-                {"moveto", SyntaxKind.MoveToStatement }
+                {"moveto", SyntaxKind.MoveToStatement },
+                {"drawto", SyntaxKind.DrawToStatement }
             };
         }
 

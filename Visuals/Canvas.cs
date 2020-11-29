@@ -12,6 +12,8 @@ namespace gpl.Visuals
     {
         private Graphics _graphics;
         private PictureBox _canvas;
+        private Pen _pen;
+        
         public int X { get; set; }
         public int Y { get; set; }
 
@@ -19,6 +21,7 @@ namespace gpl.Visuals
         {
             _graphics = graphics;
             _canvas = canvas;
+            _pen = new Pen(Color.Black, 3);
         }
 
         public void MoveTo(int X, int Y)
@@ -26,11 +29,23 @@ namespace gpl.Visuals
             Bitmap point = new Bitmap(_canvas.Width, _canvas.Height);
             Graphics g = Graphics.FromImage(point);
             SolidBrush brush = new SolidBrush(Color.Black);
-            g.FillEllipse(brush, X, Y, 10, 10);
+            g.FillEllipse(brush, X, Y, 7, 7);
             _canvas.Image = point;
 
             this.X = X;
             this.Y = Y;
         }
+
+        public void DrawTo(int X, int Y)
+        {
+            _graphics.DrawLine(_pen, this.X, this.Y, X, Y);
+            MoveTo(X, Y);
+        }
+
+        public Pen GetPen(Color color, int strokeThickness)
+        {
+            return new Pen(color, strokeThickness);
+        }
+
     }
 }

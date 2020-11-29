@@ -12,6 +12,7 @@ namespace gpl.Visuals
     {
         private StatementSyntax _statement;
         private Canvas _canvas;
+
         public Painter(Canvas canvas, StatementSyntax statement)
         {
             _canvas = canvas;
@@ -23,8 +24,13 @@ namespace gpl.Visuals
             switch (_statement.Kind)
             {
                 case SyntaxKind.MoveToStatement:
-                    var statement = (MoveToStatementSyntax)_statement;
-                    _canvas.MoveTo(statement.Point[0], statement.Point[1]);
+                    var moveto = (MoveToStatementSyntax)_statement;
+                    _canvas.MoveTo(moveto.Point[0], moveto.Point[1]);
+                    break;
+
+                case SyntaxKind.DrawToStatement:
+                    var drawto = (DrawToStatementSyntax)_statement;
+                    _canvas.DrawTo(drawto.Point[0], drawto.Point[1]);
                     break;
             }
         }

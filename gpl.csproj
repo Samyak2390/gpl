@@ -49,6 +49,7 @@
     <Compile Include="Compiler\SyntaxMap.cs" />
     <Compile Include="Compiler\SyntaxKind.cs" />
     <Compile Include="Compiler\Syntax\BadSyntax.cs" />
+    <Compile Include="Compiler\Syntax\DrawToStatementSyntax.cs" />
     <Compile Include="Compiler\Syntax\StatementSyntax.cs" />
     <Compile Include="Compiler\Syntax\MoveToStatementSyntax.cs" />
     <Compile Include="Compiler\Validator.cs" />

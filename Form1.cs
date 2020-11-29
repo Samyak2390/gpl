@@ -17,6 +17,7 @@ namespace gpl
     {
         Bitmap canvasBitmap;
         Canvas visual;
+        const int DEFAULT_COORDINATE = 0;
 
         public Form1()
         {
@@ -24,7 +25,7 @@ namespace gpl
             
             this.canvasBitmap = new Bitmap(canvas.Width, canvas.Height);
             visual = new Canvas(Graphics.FromImage(this.canvasBitmap), canvas);
-            visual.MoveTo(0, 0);
+            visual.MoveTo(DEFAULT_COORDINATE, DEFAULT_COORDINATE);
         }
 
         private void canvas_Paint(object sender, PaintEventArgs e)
@@ -64,17 +65,3 @@ namespace gpl
         }
     }
 }
-/*
-
-if (tokens[0].ToLower().Equals("drawto"))
-{
-    int a = Int32.Parse(tokens[1]);
-    int b = Int32.Parse(tokens[2]);
-    this.g.DrawLine(this.pen, this.xPos, this.yPos, a, b);
-    //canvas.Image = canvasBitmap;
-    this.xPos = a;
-    this.yPos = b;
-    this.changeStartPos();
-    //Refresh();//From Form class
-}
-*/

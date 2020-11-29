@@ -10,5 +10,6 @@ namespace gpl.Compiler
     {
         BadSyntax,
         MoveToStatement,
+        DrawToStatement,
     }
 }

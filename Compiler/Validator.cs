@@ -37,6 +37,17 @@ namespace gpl.Compiler
                             Diagnostics.Add($"Two Parameters required for <{_tokens[0]}>.");
                         }
                         break;
+                    case SyntaxKind.DrawToStatement:
+                        try
+                        {
+                            int[] point = GetPoint(_tokens[1], _tokens[2]);
+                            return new DrawToStatementSyntax(SyntaxKind.DrawToStatement, point);
+                        }
+                        catch (Exception e)
+                        {
+                            Diagnostics.Add($"Two Parameters required for <{_tokens[0]}>.");
+                        }
+                        break;
                 }
             }
             else

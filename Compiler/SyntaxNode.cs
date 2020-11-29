@@ -47,7 +47,7 @@ namespace gpl.Compiler
         {
             var marker = isLast ? "└──" : "├──";
 
-            ParseTree = indent + marker + node.Kind;
+            ParseTree += indent + marker + node.Kind;
             if(node is SyntaxToken t && t.Value != null)
             {
                 ParseTree += " " + t.Value;

@@ -62,6 +62,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Compiler\Compilation.cs" />
     <Compile Include="Compiler\MoveToStatementSyntax.cs" />
     <Compile Include="Compiler\LiteralExpressionSyntax.cs" />
     <Compile Include="Compiler\ExpressionSyntax.cs" />

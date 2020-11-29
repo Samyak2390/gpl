@@ -11,5 +11,7 @@ namespace gpl.Compiler
         BadSyntax,
         MoveToStatement,
         DrawToStatement,
+        ResetStatement,
+        ClearStatement
     }
 }

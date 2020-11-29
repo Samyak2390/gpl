@@ -47,5 +47,11 @@ namespace gpl.Visuals
             return new Pen(color, strokeThickness);
         }
 
+        public Graphics GetSetGraphics 
+        { 
+            get { return _graphics; }
+            set { _graphics = value; }
+        }
+
     }
 }

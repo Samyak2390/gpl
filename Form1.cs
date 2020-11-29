@@ -41,6 +41,23 @@ namespace gpl
                 string[] lines = cli.Text.Split('\n');
                 string command = lines[lines.Length - 2].Trim();
                 string[] tokens = command.Split(new string[] {" "}, System.StringSplitOptions.RemoveEmptyEntries);
+                if(tokens.Length == 1)
+                {
+                    switch (tokens[0].ToLower())
+                    {
+                        case "reset":
+                            visual.MoveTo(DEFAULT_COORDINATE, DEFAULT_COORDINATE);
+                            break;
+
+                        case "clear":
+                            this.canvasBitmap.Dispose();
+                            this.canvasBitmap = new Bitmap(canvas.Width, canvas.Height);
+                            visual.GetSetGraphics = Graphics.FromImage(this.canvasBitmap);
+                            Refresh();
+                            break;
+                    }
+                }
+
                 if(tokens.Length > 0)
                 {
                     Validator valid = new Validator(tokens);

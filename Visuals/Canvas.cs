@@ -15,7 +15,9 @@ namespace gpl.Visuals
         private Graphics _graphics;
         private PictureBox _canvas;
         private Pen _pen;
-        
+        private SolidBrush _brush;
+        private bool _fillState;
+
         public int X { get; set; }
         public int Y { get; set; }
 
@@ -24,6 +26,8 @@ namespace gpl.Visuals
             _graphics = graphics;
             _canvas = canvas;
             _pen = new Pen(Color.Black, 3);
+            _brush = new SolidBrush(Color.Black);
+            _fillState = false;
         }
 
         public void MoveTo(int X, int Y)
@@ -49,6 +53,16 @@ namespace gpl.Visuals
             _pen = new Pen(color);
         }
 
+        public void SetBrush(Color color)
+        {
+            _brush = new SolidBrush(color);
+        }
+
+        public void SetFillState(bool state)
+        {
+            _fillState = state;
+        }
+
         public Graphics GetSetGraphics 
         { 
             get { return _graphics; }
@@ -60,8 +74,8 @@ namespace gpl.Visuals
             switch (statement)
             {
                 case RectangleStatementSyntax rectangleSyntax:
-                    RectangleShape rectangle = (RectangleShape)ShapeFactory.GetShape(rectangleSyntax, _graphics);
-                    rectangle.Draw(_pen, X, Y);
+                    RectangleShape rectangle = (RectangleShape)ShapeFactory.GetShape(rectangleSyntax, _graphics, _fillState);
+                    rectangle.Draw(_pen, _brush, X, Y);
                     MoveTo(X+rectangleSyntax.Width, Y+rectangleSyntax.Height);
                     break;
             }

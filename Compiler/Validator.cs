@@ -75,6 +75,56 @@ namespace gpl.Compiler
                         }
                         break;
 
+                    case SyntaxKind.BrushStatement:
+                        try
+                        {
+                            if (Regex.IsMatch(_tokens[1], @"^[a-zA-Z]+$"))
+                            {
+                                string color = _tokens[1];
+                                BrushStatementSyntax brush = new BrushStatementSyntax(SyntaxKind.BrushStatement, color);
+                                if (brush.Color == Color.Black)
+                                {
+                                    Diagnostics.Add($"{color} not found.");
+                                }
+                                return brush;
+                            }
+                            else
+                            {
+                                Diagnostics.Add("Color name must be alphabetic.");
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            Diagnostics.Add($"<{_tokens[0]}> requires a color parameter.");
+                        }
+                        break;
+
+                    case SyntaxKind.FillStatement:
+                        try
+                        {
+                            if (Regex.IsMatch(_tokens[1], @"^[a-zA-Z]"))
+                            {
+                                string state = _tokens[1];
+                                if(state.Equals("on") || state.Equals("off"))
+                                {
+                                    return new FillStatementSyntax(SyntaxKind.FillStatement, state);
+                                }
+                                else
+                                {
+                                    Diagnostics.Add($"<{_tokens[0]}> requires on/off parameter.");
+                                }
+                            }
+                            else
+                            {
+                                Diagnostics.Add($"<{_tokens[0]}> requires on/off parameter.");
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            Diagnostics.Add($"<{_tokens[0]}> requires on/off parameter.");
+                        }
+                        break;
+
                     case SyntaxKind.RectangleStatement:
                         try
                         {

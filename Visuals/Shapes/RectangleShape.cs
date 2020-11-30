@@ -13,18 +13,25 @@ namespace gpl.Visuals.Shapes
         private int _width;
         private int _height;
         private Graphics _graphics;
-        public RectangleShape(RectangleStatementSyntax rectangle, Graphics graphics)
+        private bool _fillState;
+        public RectangleShape(RectangleStatementSyntax rectangle, Graphics graphics, bool state)
         {
             _width = rectangle.Width;
             _height = rectangle.Height;
             _graphics = graphics;
+            _fillState = state;
         }
 
-        public void Draw(Pen pen, int X, int Y)
+        public void Draw(Pen pen, SolidBrush brush, int X, int Y)
         {
-            //SolidBrush b = new SolidBrush(colour);
-            //g.FillRectangle(b, x, y, width, height);
-            _graphics.DrawRectangle(pen, X, Y, _width, _height);
+            if (_fillState)
+            {
+                _graphics.FillRectangle(brush, X, Y, _width, _height);
+            }
+            else
+            {
+                _graphics.DrawRectangle(pen, X, Y, _width, _height);
+            }
         }
     }
 }

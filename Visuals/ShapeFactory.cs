@@ -11,13 +11,13 @@ namespace gpl.Visuals
 {
     public class ShapeFactory
     {
-        public static Shape GetShape(StatementSyntax statement, Graphics graphics)
+        public static Shape GetShape(StatementSyntax statement, Graphics graphics, bool fillState)
         {
             switch (statement)
             {
                 //case RectangleStatementSyntax rectangle:
                 default:
-                    return new RectangleShape( (RectangleStatementSyntax)statement, graphics);
+                    return new RectangleShape( (RectangleStatementSyntax)statement, graphics, fillState);
             }
         }
     }

@@ -21,7 +21,9 @@ namespace gpl.Compiler
                 {"reset", SyntaxKind.ResetStatement },
                 {"clear", SyntaxKind.ClearStatement },
                 {"pen", SyntaxKind.PenStatement },
-                {"rectangle", SyntaxKind.RectangleStatement }
+                {"rectangle", SyntaxKind.RectangleStatement },
+                {"brush", SyntaxKind.BrushStatement },
+                {"fill", SyntaxKind.FillStatement }
             };
         }
 

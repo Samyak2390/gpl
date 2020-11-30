@@ -38,6 +38,16 @@ namespace gpl.Visuals
                     _canvas.SetPen(pen.Color);
                     break;
 
+                case SyntaxKind.BrushStatement:
+                    var brush = (BrushStatementSyntax)_statement;
+                    _canvas.SetBrush(brush.Color);
+                    break;
+
+                case SyntaxKind.FillStatement:
+                    var fill = (FillStatementSyntax)_statement;
+                    _canvas.SetFillState(fill.State);
+                    break;
+
                 case SyntaxKind.RectangleStatement:
                     var rectangle = (RectangleStatementSyntax)_statement;
                     _canvas.Draw(rectangle);

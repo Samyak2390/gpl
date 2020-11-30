@@ -50,6 +50,8 @@
     <Compile Include="Compiler\SyntaxKind.cs" />
     <Compile Include="Compiler\Syntax\BadSyntax.cs" />
     <Compile Include="Compiler\Syntax\DrawToStatementSyntax.cs" />
+    <Compile Include="Compiler\Syntax\BrushStatementSyntax.cs" />
+    <Compile Include="Compiler\Syntax\FillStatementSyntax.cs" />
     <Compile Include="Compiler\Syntax\PenStatementSyntax.cs" />
     <Compile Include="Compiler\Syntax\RectangleStatementSyntax.cs" />
     <Compile Include="Compiler\Syntax\StatementSyntax.cs" />

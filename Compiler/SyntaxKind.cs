@@ -16,6 +16,7 @@ namespace gpl.Compiler
         PenStatement,
         BrushStatement,
         FillStatement,
-        RectangleStatement
+        RectangleStatement,
+        CircleStatement
     }
 }

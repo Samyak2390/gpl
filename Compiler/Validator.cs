@@ -137,6 +137,28 @@ namespace gpl.Compiler
                         }
                         break;
 
+                    case SyntaxKind.CircleStatement:
+                        try
+                        {
+                            string radius = _tokens[1];
+                            try
+                            {
+                                if (int.TryParse(radius, out var r))
+                                {
+                                    return new CircleStatementSyntax(SyntaxKind.CircleStatement, r);
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                Diagnostics.Add($"Radius must be integer. <{radius}> given.");
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            Diagnostics.Add($"Radius Parameters required for <{_tokens[0]}>.");
+                        }
+                        break;
+
                 }
             }
             else

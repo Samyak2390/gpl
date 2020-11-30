@@ -15,9 +15,13 @@ namespace gpl.Visuals
         {
             switch (statement)
             {
-                //case RectangleStatementSyntax rectangle:
-                default:
+                case RectangleStatementSyntax rectangle:
                     return new RectangleShape( (RectangleStatementSyntax)statement, graphics, fillState);
+
+                //case CircleStatementSyntax circle:
+                default:
+                    return new CircleShape((CircleStatementSyntax)statement, graphics, fillState);
+                
             }
         }
     }

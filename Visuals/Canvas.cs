@@ -78,6 +78,12 @@ namespace gpl.Visuals
                     rectangle.Draw(_pen, _brush, X, Y);
                     MoveTo(X+rectangleSyntax.Width, Y+rectangleSyntax.Height);
                     break;
+
+                case CircleStatementSyntax circleSyntax:
+                    CircleShape circle = (CircleShape)ShapeFactory.GetShape(circleSyntax, _graphics, _fillState);
+                    circle.Draw(_pen, _brush, X, Y);
+                    MoveTo(X, Y);
+                    break;
             }
         }
 

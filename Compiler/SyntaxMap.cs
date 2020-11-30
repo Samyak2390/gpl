@@ -23,7 +23,8 @@ namespace gpl.Compiler
                 {"pen", SyntaxKind.PenStatement },
                 {"rectangle", SyntaxKind.RectangleStatement },
                 {"brush", SyntaxKind.BrushStatement },
-                {"fill", SyntaxKind.FillStatement }
+                {"fill", SyntaxKind.FillStatement },
+                {"circle", SyntaxKind.CircleStatement },
             };
         }
 

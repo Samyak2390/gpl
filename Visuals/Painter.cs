@@ -52,6 +52,11 @@ namespace gpl.Visuals
                     var rectangle = (RectangleStatementSyntax)_statement;
                     _canvas.Draw(rectangle);
                     break;
+
+                case SyntaxKind.CircleStatement:
+                    var circle = (CircleStatementSyntax)_statement;
+                    _canvas.Draw(circle);
+                    break;
             }
         }
     }

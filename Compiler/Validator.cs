@@ -75,6 +75,18 @@ namespace gpl.Compiler
                         }
                         break;
 
+                    case SyntaxKind.RectangleStatement:
+                        try
+                        {
+                            int[] size = GetPoint(_tokens[1], _tokens[2]);
+                            return new RectangleStatementSyntax(SyntaxKind.RectangleStatement, size);
+                        }
+                        catch (Exception e)
+                        {
+                            Diagnostics.Add($"Two Parameters required for <{_tokens[0]}>.");
+                        }
+                        break;
+
                 }
             }
             else

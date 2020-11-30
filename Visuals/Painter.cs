@@ -38,6 +38,10 @@ namespace gpl.Visuals
                     _canvas.SetPen(pen.Color);
                     break;
 
+                case SyntaxKind.RectangleStatement:
+                    var rectangle = (RectangleStatementSyntax)_statement;
+                    _canvas.Draw(rectangle);
+                    break;
             }
         }
     }

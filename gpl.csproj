@@ -51,6 +51,7 @@
     <Compile Include="Compiler\Syntax\BadSyntax.cs" />
     <Compile Include="Compiler\Syntax\DrawToStatementSyntax.cs" />
     <Compile Include="Compiler\Syntax\PenStatementSyntax.cs" />
+    <Compile Include="Compiler\Syntax\RectangleStatementSyntax.cs" />
     <Compile Include="Compiler\Syntax\StatementSyntax.cs" />
     <Compile Include="Compiler\Syntax\MoveToStatementSyntax.cs" />
     <Compile Include="Compiler\Validator.cs" />
@@ -64,6 +65,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Visuals\Canvas.cs" />
     <Compile Include="Visuals\Painter.cs" />
+    <Compile Include="Visuals\ShapeFactory.cs" />
+    <Compile Include="Visuals\Shapes\RectangleShape.cs" />
+    <Compile Include="Visuals\Shapes\Shape.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>

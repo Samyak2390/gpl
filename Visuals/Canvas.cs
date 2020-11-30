@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 using System.Windows.Forms;
+using gpl.Compiler.Syntax;
+using gpl.Visuals.Shapes;
 
 namespace gpl.Visuals
 {
@@ -51,6 +53,18 @@ namespace gpl.Visuals
         { 
             get { return _graphics; }
             set { _graphics = value; }
+        }
+
+        public void Draw(StatementSyntax statement)
+        {
+            switch (statement)
+            {
+                case RectangleStatementSyntax rectangleSyntax:
+                    RectangleShape rectangle = (RectangleShape)ShapeFactory.GetShape(rectangleSyntax, _graphics);
+                    rectangle.Draw(_pen, X, Y);
+                    MoveTo(X+rectangleSyntax.Width, Y+rectangleSyntax.Height);
+                    break;
+            }
         }
 
     }

@@ -14,5 +14,6 @@ namespace gpl.Compiler
         ResetStatement,
         ClearStatement,
         PenStatement,
+        RectangleStatement
     }
 }

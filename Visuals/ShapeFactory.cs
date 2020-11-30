@@ -18,10 +18,11 @@ namespace gpl.Visuals
                 case RectangleStatementSyntax rectangle:
                     return new RectangleShape( (RectangleStatementSyntax)statement, graphics, fillState);
 
-                //case CircleStatementSyntax circle:
-                default:
+                case CircleStatementSyntax circle:
                     return new CircleShape((CircleStatementSyntax)statement, graphics, fillState);
-                
+
+                default:
+                    return new TriangleShape((TriangleStatementSyntax)statement, graphics, fillState);
             }
         }
     }

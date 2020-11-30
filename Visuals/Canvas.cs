@@ -84,6 +84,12 @@ namespace gpl.Visuals
                     circle.Draw(_pen, _brush, X, Y);
                     MoveTo(X, Y);
                     break;
+
+                case TriangleStatementSyntax triangleSyntax:
+                    TriangleShape triangle = (TriangleShape)ShapeFactory.GetShape(triangleSyntax, _graphics, _fillState);
+                    triangle.Draw(_pen, _brush, X, Y);
+                    MoveTo(X, Y);
+                    break;
             }
         }
 

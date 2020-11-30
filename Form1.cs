@@ -43,41 +43,66 @@ namespace gpl
                 string[] tokens = command.Split(new string[] {" "}, System.StringSplitOptions.RemoveEmptyEntries);
                 if(tokens.Length == 1)
                 {
-                    switch (tokens[0].ToLower())
-                    {
-                        case "reset":
-                            visual.MoveTo(DEFAULT_COORDINATE, DEFAULT_COORDINATE);
-                            break;
-
-                        case "clear":
-                            this.canvasBitmap.Dispose();
-                            this.canvasBitmap = new Bitmap(canvas.Width, canvas.Height);
-                            visual.GetSetGraphics = Graphics.FromImage(this.canvasBitmap);
-                            Refresh();
-                            break;
-                    }
+                    SingleCommand(tokens[0]);
                 }
 
                 if(tokens.Length > 0)
                 {
-                    Validator valid = new Validator(tokens);
-                    StatementSyntax statement = valid.Validate();
-                    Painter painter = new Painter(visual, statement);
-
-                    if(valid.Diagnostics.Count <= 0)
-                    {
-                        painter.Paint();
-                    }
-                    else
-                    {
-                        string Errors = "";
-                        foreach(var error in valid.Diagnostics)
-                        {
-                            Errors += error + Environment.NewLine;
-                        }
-                        MessageBox.Show(Errors, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
+                    ProcessCommand(tokens);
                 }
+            }
+        }
+
+        public void SingleCommand(string token)
+        {
+            switch (token.ToLower())
+            {
+                case "reset":
+                    visual.MoveTo(DEFAULT_COORDINATE, DEFAULT_COORDINATE);
+                    break;
+
+                case "clear":
+                    this.canvasBitmap.Dispose();
+                    this.canvasBitmap = new Bitmap(canvas.Width, canvas.Height);
+                    visual.GetSetGraphics = Graphics.FromImage(this.canvasBitmap);
+                    Refresh();
+                    break;
+
+                case "run":
+                    ProcessCommands();
+                    break;
+            }
+        }
+
+        public void ProcessCommands()
+        {
+            string[] lines = editor.Text.Split(new string[] { "\n" }, System.StringSplitOptions.RemoveEmptyEntries);
+            foreach(string line in lines)
+            {
+                string trimmedLine = line.Trim();
+                string[] tokens = trimmedLine.Split(new string[] { " " }, System.StringSplitOptions.RemoveEmptyEntries);
+                ProcessCommand(tokens);
+            }
+        }
+
+        public void ProcessCommand(string[] tokens)
+        {
+            Validator valid = new Validator(tokens);
+            StatementSyntax statement = valid.Validate();
+            Painter painter = new Painter(visual, statement);
+
+            if (valid.Diagnostics.Count <= 0)
+            {
+                painter.Paint();
+            }
+            else
+            {
+                string Errors = "";
+                foreach (var error in valid.Diagnostics)
+                {
+                    Errors += error + Environment.NewLine;
+                }
+                MessageBox.Show(Errors, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

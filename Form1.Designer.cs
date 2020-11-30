@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+            this.editor = new System.Windows.Forms.RichTextBox();
             this.cli = new System.Windows.Forms.RichTextBox();
             this.panel = new System.Windows.Forms.Panel();
             this.canvas = new System.Windows.Forms.PictureBox();
@@ -36,17 +36,17 @@
             ((System.ComponentModel.ISupportInitialize)(this.canvas)).BeginInit();
             this.SuspendLayout();
             // 
-            // richTextBox1
+            // editor
             // 
-            this.richTextBox1.AcceptsTab = true;
-            this.richTextBox1.BackColor = System.Drawing.SystemColors.InfoText;
-            this.richTextBox1.Font = new System.Drawing.Font("Consolas", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.richTextBox1.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.richTextBox1.Location = new System.Drawing.Point(701, 0);
-            this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(512, 574);
-            this.richTextBox1.TabIndex = 0;
-            this.richTextBox1.Text = "";
+            this.editor.AcceptsTab = true;
+            this.editor.BackColor = System.Drawing.SystemColors.InfoText;
+            this.editor.Font = new System.Drawing.Font("Consolas", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.editor.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.editor.Location = new System.Drawing.Point(701, 0);
+            this.editor.Name = "editor";
+            this.editor.Size = new System.Drawing.Size(512, 574);
+            this.editor.TabIndex = 0;
+            this.editor.Text = "";
             // 
             // cli
             // 
@@ -88,7 +88,7 @@
             this.ClientSize = new System.Drawing.Size(1214, 574);
             this.Controls.Add(this.panel);
             this.Controls.Add(this.cli);
-            this.Controls.Add(this.richTextBox1);
+            this.Controls.Add(this.editor);
             this.MaximizeBox = false;
             this.Name = "Form1";
             this.Text = "Form1";
@@ -100,7 +100,7 @@
 
         #endregion
 
-        private System.Windows.Forms.RichTextBox richTextBox1;
+        private System.Windows.Forms.RichTextBox editor;
         private System.Windows.Forms.RichTextBox cli;
         private System.Windows.Forms.Panel panel;
         private System.Windows.Forms.PictureBox canvas;

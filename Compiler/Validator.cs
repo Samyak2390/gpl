@@ -159,6 +159,26 @@ namespace gpl.Compiler
                         }
                         break;
 
+                    case SyntaxKind.TriangleStatement:
+                        try
+                        {
+                            Point vertex1 = GetVertex(_tokens[1], _tokens[2]);
+                            Point vertex2 = GetVertex(_tokens[3], _tokens[4]);
+                            Point vertex3 = GetVertex(_tokens[5], _tokens[6]);
+
+                            if(!(vertex1.IsEmpty || vertex2.IsEmpty || vertex3.IsEmpty))
+                            {
+                                Point[] vertices = { vertex1, vertex2, vertex3 };
+                                return new TriangleStatementSyntax(SyntaxKind.TriangleStatement, vertices);
+                            }
+                        }
+                        catch(Exception e)
+                        {
+                            Diagnostics.Add($"Six integer Parameters required for <{_tokens[0]}>.");
+                        }
+                        break;
+
+
                 }
             }
             else
@@ -189,6 +209,26 @@ namespace gpl.Compiler
             }
            
             return point;
+        }
+
+        private Point GetVertex(string X, string Y)
+        {
+            try
+            {
+                if (int.TryParse(X, out var x) && int.TryParse(Y, out var y))
+                {
+                    return new Point(x, y);
+                }
+                else
+                {
+                    throw new Exception();
+                }
+            }
+            catch (Exception error)
+            {
+                Diagnostics.Add($"<{X}> and <{Y}> must be integers");
+            }
+            return new Point();
         }
 
     }

@@ -25,6 +25,8 @@ namespace gpl.Compiler
                 {"brush", SyntaxKind.BrushStatement },
                 {"fill", SyntaxKind.FillStatement },
                 {"circle", SyntaxKind.CircleStatement },
+                {"triangle", SyntaxKind.TriangleStatement },
+                {"run", SyntaxKind.RunStatement },
             };
         }
 

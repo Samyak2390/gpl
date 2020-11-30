@@ -147,6 +147,10 @@ namespace gpl.Compiler
                                 {
                                     return new CircleStatementSyntax(SyntaxKind.CircleStatement, r);
                                 }
+                                else
+                                {
+                                    throw new Exception();
+                                }
                             }
                             catch (Exception e)
                             {

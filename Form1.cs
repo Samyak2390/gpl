@@ -10,6 +10,8 @@ using System.Windows.Forms;
 using gpl.Compiler;
 using gpl.Compiler.Syntax;
 using gpl.Visuals;
+using System.IO;
+using System.Security;
 
 namespace gpl
 {
@@ -103,6 +105,48 @@ namespace gpl
                     Errors += error + Environment.NewLine;
                 }
                 MessageBox.Show(Errors, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog save = new SaveFileDialog();
+            save.FileName = "Code.txt";
+            save.Filter = "Text File | *.txt";
+
+            if (save.ShowDialog() == DialogResult.OK)
+            {
+                StreamWriter writer = new StreamWriter(save.OpenFile());
+                string text = editor.Text;
+                writer.Write(text);
+                writer.Dispose();
+                writer.Close();
+            }
+        }
+
+        private void loadFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog load = new OpenFileDialog();
+            load.Filter = "txt files (*.txt)|*.txt";
+
+            if (load.ShowDialog() == DialogResult.OK)
+            {
+                try
+                {
+                    string line = "";
+                    string finalText = "";
+                    var sr = new StreamReader(load.FileName);
+                    while ((line = sr.ReadLine()) != null)
+                    {
+                        finalText += line + Environment.NewLine;
+                    }
+                    editor.Text = finalText;
+                }
+                catch (SecurityException ex)
+                {
+                    MessageBox.Show($"Security error.\n\nError message: {ex.Message}\n\n" +
+                    $"Details:\n\n{ex.StackTrace}");
+                }
             }
         }
     }

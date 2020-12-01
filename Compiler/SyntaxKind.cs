@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace gpl.Compiler
 {
+    /// <summary>
+    /// Enum type enumerating the type of available commands.
+    /// </summary>
     public enum SyntaxKind
     {
         BadSyntax,

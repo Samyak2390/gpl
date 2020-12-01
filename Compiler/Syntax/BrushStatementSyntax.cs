@@ -7,12 +7,20 @@ using System.Drawing;
 
 namespace gpl.Compiler.Syntax
 {
+    /// <summary>
+    /// Class representing the brush command.
+    /// </summary>
     class BrushStatementSyntax : StatementSyntax
     {
         public override SyntaxKind Kind { get; }
         public Color Color { get; }
         private readonly Dictionary<string, Color> ColorMap;
 
+        /// <summary>
+        /// Constructor initializing available colors.
+        /// </summary>
+        /// <param name="kind">Kind of syntax.</param>
+        /// <param name="color">Type of color</param>
         public BrushStatementSyntax(SyntaxKind kind, string color)
         {
             ColorMap = new Dictionary<string, Color>
@@ -26,6 +34,11 @@ namespace gpl.Compiler.Syntax
             Color = GetColor(color);
         }
 
+        /// <summary>
+        /// Method to find and return color.
+        /// </summary>
+        /// <param name="color">Name of the color in string.</param>
+        /// <returns>Color struct</returns>
         private Color GetColor(string color)
         {
             if (ColorMap.ContainsKey(color))

@@ -9,6 +9,10 @@ using System.Drawing;
 
 namespace gpl.Visuals
 {
+    /// <summary>
+    /// Factor class for Shape that returns the Shape object depending upon
+    /// type of Syntax
+    /// </summary>
     public class ShapeFactory
     {
         public static Shape GetShape(StatementSyntax statement, Graphics graphics, bool fillState)

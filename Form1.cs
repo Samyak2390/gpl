@@ -16,6 +16,10 @@ using System.Collections;
 
 namespace gpl
 {
+    /// <summary>
+    /// Main Form Class to initialize all components like textbox, picture box etc.
+    /// It contains code for all event driven programmes.
+    /// </summary>
     public partial class Form1 : Form
     {
         Bitmap canvasBitmap;
@@ -24,6 +28,9 @@ namespace gpl
         public ArrayList diagnostics;
         string errorBag = "";
 
+        /// <summary>
+        /// Constructor that initializes the form, makes a bitmap of picture box's size.
+        /// </summary>
         public Form1()
         {
             InitializeComponent();
@@ -33,20 +40,31 @@ namespace gpl
             visual.MoveTo(DEFAULT_COORDINATE, DEFAULT_COORDINATE);
         }
 
+        /// <summary>
+        /// Paint event for the picture box - canvas.
+        /// </summary>
+        /// <param name="sender">Instance of object class</param>
+        /// <param name="e">Pant event Arguments</param>
         private void canvas_Paint(object sender, PaintEventArgs e)
         {
             Graphics g = e.Graphics;
             g.DrawImageUnscaled(this.canvasBitmap, 0, 0);
         }
 
+        /// <summary>
+        /// Method to execute the single worded commands.
+        /// </summary>
+        /// <param name="token">Command to be executed</param>
         public void SingleCommand(string token)
         {
             switch (token.ToLower())
             {
+                //moves pen to co-ordinate (0, 0)
                 case "reset":
                     visual.MoveTo(DEFAULT_COORDINATE, DEFAULT_COORDINATE);
                     break;
 
+                //clears the drawing screen
                 case "clear":
                     this.canvasBitmap.Dispose();
                     this.canvasBitmap = new Bitmap(canvas.Width, canvas.Height);
@@ -54,12 +72,16 @@ namespace gpl
                     Refresh();
                     break;
 
+                //command that executes multiline commands from editor
                 case "run":
                     ProcessCommands();
                     break;
             }
         }
 
+        /// <summary>
+        /// Method that executes multiline commands
+        /// </summary>
         public void ProcessCommands()
         {
             string[] lines = editor.Text.Split(new string[] { "\n" }, System.StringSplitOptions.RemoveEmptyEntries);
@@ -71,6 +93,11 @@ namespace gpl
             }
         }
 
+        /// <summary>
+        /// Method that takes command and its parameters as an array, validates it and draws to canvas
+        /// if there are no errors.
+        /// </summary>
+        /// <param name="tokens"></param>
         public void ProcessCommand(string[] tokens)
         {
             Validator valid = new Validator(tokens, diagnostics);
@@ -83,6 +110,12 @@ namespace gpl
             }
         }
 
+        /// <summary>
+        /// Click event that opens the file dialog that helps in choosing the location
+        /// to save the code written in editor.
+        /// </summary>
+        /// <param name="sender">Instance of object class</param>
+        /// <param name="e">Click Event Arguments</param>
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SaveFileDialog save = new SaveFileDialog();
@@ -99,6 +132,12 @@ namespace gpl
             }
         }
 
+        /// <summary> 
+        /// Click event that opens the file dialog that helps in choosing the location
+        /// to load the text file in code editor.
+        /// </summary>
+        /// <param name="sender">Instance of object class</param>
+        /// <param name="e">Click Event Arguments</param>
         private void loadFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenFileDialog load = new OpenFileDialog();
@@ -125,6 +164,13 @@ namespace gpl
             }
         }
 
+        /// <summary>
+        /// Key down event which is executed in press of Enter from keyboard.
+        /// Decides which type of command to executes and shows errors from commands
+        /// in message box.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void cli_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)

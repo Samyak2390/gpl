@@ -8,17 +8,29 @@ using gpl.Compiler;
 
 namespace gpl.Visuals
 {
+    /// <summary>
+    /// Class that directs specific syntax statements to their function implementation.
+    /// </summary>
     public class Painter
     {
         private StatementSyntax _statement;
         private Canvas _canvas;
 
+        /// <summary>
+        /// Constructor to pass required parameters.
+        /// </summary>
+        /// <param name="canvas">Object of canvas</param>
+        /// <param name="statement">Object of StatementSyntax class</param>
         public Painter(Canvas canvas, StatementSyntax statement)
         {
             _canvas = canvas;
             _statement = statement;
         }
 
+        /// <summary>
+        /// Paint method that guides which function to call depending upon the type of 
+        /// Syntax statement
+        /// </summary>
         public void Paint()
         {
             switch (_statement.Kind)

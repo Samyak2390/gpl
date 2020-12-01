@@ -10,12 +10,22 @@ using System.Drawing;
 
 namespace gpl.Compiler
 {
+    /// <summary>
+    /// Class that validates the given command and returns the object of respective command
+    /// if validation passes. Otherwise, returns the list of errors occured as a string.
+    /// </summary>
     public class Validator
     {
         private string[] _tokens;
         private SyntaxMap _syntaxMap;
         public ArrayList _diagnostics;
 
+        /// <summary>
+        /// Constructor that initializes mappings of available commands and their types,
+        /// along with the passed reference of diagnostics and array of command.
+        /// </summary>
+        /// <param name="tokens"></param>
+        /// <param name="diagnostics"></param>
         public Validator(string[] tokens, ArrayList diagnostics)
         {
             _tokens = tokens;
@@ -23,10 +33,17 @@ namespace gpl.Compiler
             _diagnostics = diagnostics;
         }
 
+        /// <summary>
+        /// Method that validates the given command stored in _tokens and returns the respective object of 
+        /// type of command provided or adds errors to dianostic array list if validation fails.
+        /// </summary>
+        /// <returns></returns>
         public StatementSyntax Validate()
         {
+            //checking proved command against listed commands in hash map
             if (_syntaxMap.HasSyntax(_tokens[0].ToLower()))
             {
+                //Finding the type of the command and returning its object with provide parameters as its properties
                 switch (_syntaxMap.GetKind(_tokens[0].ToLower()))
                 {
                     case SyntaxKind.MoveToStatement:
@@ -193,6 +210,12 @@ namespace gpl.Compiler
             return new BadSyntax();
         }
 
+        /// <summary>
+        /// Method that checks if given strings are integers.
+        /// </summary>
+        /// <param name="X">X co-ordinate</param>
+        /// <param name="Y">Y co-ordinate</param>
+        /// <returns>Array of integers[X,Y].</returns>
         private int[] GetPoint(string X, string Y)
         {
             int[] point = new int[2];
@@ -216,6 +239,12 @@ namespace gpl.Compiler
             return point;
         }
 
+        /// <summary>
+        /// Method that checks if given strings are integers.
+        /// </summary>
+        /// <param name="X">X co-ordinate</param>
+        /// <param name="Y">Y co-ordinate</param>
+        /// <returns>A Point object.</returns>
         private Point GetVertex(string X, string Y)
         {
             try

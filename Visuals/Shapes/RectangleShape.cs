@@ -8,12 +8,22 @@ using System.Drawing;
 
 namespace gpl.Visuals.Shapes
 {
+    /// <summary>
+    /// Class representing the rectangle shape.
+    /// </summary>
     public class RectangleShape : Shape
     {
         private int _width;
         private int _height;
         private Graphics _graphics;
         private bool _fillState;
+
+        /// <summary>
+        /// Constructor initializing the required parameters for drawing the rectangle.
+        /// </summary>
+        /// <param name="rectangle">Object of rectangle syntax</param>
+        /// <param name="graphics">Graphics object used to draw rectangle</param>
+        /// <param name="state">Fill state</param>
         public RectangleShape(RectangleStatementSyntax rectangle, Graphics graphics, bool state)
         {
             _width = rectangle.Width;
@@ -22,6 +32,13 @@ namespace gpl.Visuals.Shapes
             _fillState = state;
         }
 
+        /// <summary>
+        /// Method used to draw rectangle.
+        /// </summary>
+        /// <param name="pen">Pen Object</param>
+        /// <param name="brush">SolidBrush object</param>
+        /// <param name="X">X-Coordinate</param>
+        /// <param name="Y">Y-Coordinate</param>
         public override void Draw(Pen pen, SolidBrush brush, int X, int Y)
         {
             if (_fillState)

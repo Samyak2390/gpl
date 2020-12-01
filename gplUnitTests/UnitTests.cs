@@ -10,6 +10,12 @@ namespace gplUnitTests
     public class UnitTests
     {
         [TestMethod]
+        /*
+         * This method tests moveto command by passing expected tokens to validator.
+         * If the validator return syntax type of MoveToStatementSyntax then test passes.
+         * It also asserts that the returned syntax has expected properties.
+         */
+
         public void TestMoveToCommand()
         {
             ArrayList diagnostics = new ArrayList();
@@ -22,6 +28,11 @@ namespace gplUnitTests
             Assert.AreEqual(_statement.Point[1], 100);
         }
 
+        /*
+         * Here, invalid tokens are passed to validator/parser and it expects that validator returns BadSyntax type
+         * and diagnostics arraylist contains the error message.
+         */
+
         [TestMethod]
         public void TestCommandFail()
         {
@@ -33,6 +44,12 @@ namespace gplUnitTests
             Assert.IsTrue(equal);
             Assert.IsTrue(hasError);
         }
+
+        /*
+        * This method tests rectangle command by passing expected tokens to validator.
+        * If the validator return syntax type of RectangleStatement then test passes.
+        * It also asserts that the returned syntax has expected property values for Width and Height.
+        */
 
         [TestMethod]
         public void TestRectangleCommand()
@@ -47,6 +64,11 @@ namespace gplUnitTests
             Assert.AreEqual(_statement.Height, 100);
         }
 
+        /*
+        * This method tests a valid command by passing invalid parameter tokens to validator.
+        * If the validator return syntax type of BadSyntax then test passes.
+        * It also asserts that diagnostics arraylist contains the error message.
+        */
         [TestMethod]
         public void TestIncorrectParameters()
         {
@@ -60,6 +82,9 @@ namespace gplUnitTests
         }
 
         [TestMethod]
+        /**
+         * Test for variable initialization and asserting the kind of Syntax it returns.
+         */
         public void TestVariableExpression()
         {
             ArrayList diagnostics = new ArrayList();
@@ -70,6 +95,9 @@ namespace gplUnitTests
         }
 
         [TestMethod]
+        /**
+        * Test for if statement and asserting the kind of Syntax it returns.
+        */
         public void TestIfStatement()
         {
             ArrayList diagnostics = new ArrayList();

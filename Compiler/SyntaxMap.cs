@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace gpl.Compiler
 {
+    /// <summary>
+    /// Singleton class that initializes the hashmap storing key value pair of 
+    /// available commands and its respective type.
+    /// </summary>
     public class SyntaxMap
     {
         private static SyntaxMap _instance;

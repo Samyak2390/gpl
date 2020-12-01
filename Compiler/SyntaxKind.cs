@@ -19,6 +19,8 @@ namespace gpl.Compiler
         RectangleStatement,
         RunStatement,
         CircleStatement,
-        TriangleStatement
+        TriangleStatement,
+        VariableExpression,
+        IfStatement
     }
 }

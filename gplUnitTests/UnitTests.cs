@@ -59,5 +59,25 @@ namespace gplUnitTests
             Assert.IsTrue(hasError);
         }
 
+        [TestMethod]
+        public void TestVariableExpression()
+        {
+            ArrayList diagnostics = new ArrayList();
+            Validator valid = new Validator(new string[] { "count", "=", "4" }, diagnostics);
+            StatementSyntax statement = valid.Validate();
+            bool equal = Enum.Equals(statement.Kind, SyntaxKind.VariableExpression);
+            Assert.IsTrue(equal);
+        }
+
+        [TestMethod]
+        public void TestIfStatement()
+        {
+            ArrayList diagnostics = new ArrayList();
+            Validator valid = new Validator(new string[] { "if", "count", "==", "4", "then", "moveto", "30", "30" }, diagnostics);
+            StatementSyntax statement = valid.Validate();
+            bool equal = Enum.Equals(statement.Kind, SyntaxKind.IfStatement);
+            Assert.IsTrue(equal);
+        }
+
     }
 }

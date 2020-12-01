@@ -20,7 +20,7 @@ namespace gpl.Visuals.Shapes
             _fillState = state;
         }
 
-        public void Draw(Pen pen, SolidBrush brush, int X, int Y)
+        public override void Draw(Pen pen, SolidBrush brush, int X, int Y)
         {
             if (_fillState)
             {

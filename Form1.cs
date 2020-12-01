@@ -12,6 +12,7 @@ using gpl.Compiler.Syntax;
 using gpl.Visuals;
 using System.IO;
 using System.Security;
+using System.Collections;
 
 namespace gpl
 {
@@ -20,11 +21,13 @@ namespace gpl
         Bitmap canvasBitmap;
         Canvas visual;
         const int DEFAULT_COORDINATE = 0;
+        public ArrayList diagnostics;
+        string errorBag = "";
 
         public Form1()
         {
             InitializeComponent();
-            
+            diagnostics = new ArrayList();
             this.canvasBitmap = new Bitmap(canvas.Width, canvas.Height);
             visual = new Canvas(Graphics.FromImage(this.canvasBitmap), canvas);
             visual.MoveTo(DEFAULT_COORDINATE, DEFAULT_COORDINATE);
@@ -34,25 +37,6 @@ namespace gpl
         {
             Graphics g = e.Graphics;
             g.DrawImageUnscaled(this.canvasBitmap, 0, 0);
-        }
-
-        private void cli_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            if(e.KeyChar == (char)13)
-            {
-                string[] lines = cli.Text.Split('\n');
-                string command = lines[lines.Length - 2].Trim();
-                string[] tokens = command.Split(new string[] {" "}, System.StringSplitOptions.RemoveEmptyEntries);
-                if(tokens.Length == 1)
-                {
-                    SingleCommand(tokens[0]);
-                }
-
-                if(tokens.Length > 0)
-                {
-                    ProcessCommand(tokens);
-                }
-            }
         }
 
         public void SingleCommand(string token)
@@ -89,22 +73,13 @@ namespace gpl
 
         public void ProcessCommand(string[] tokens)
         {
-            Validator valid = new Validator(tokens);
+            Validator valid = new Validator(tokens, diagnostics);
             StatementSyntax statement = valid.Validate();
             Painter painter = new Painter(visual, statement);
 
-            if (valid.Diagnostics.Count <= 0)
+            if (diagnostics.Count <= 0)
             {
                 painter.Paint();
-            }
-            else
-            {
-                string Errors = "";
-                foreach (var error in valid.Diagnostics)
-                {
-                    Errors += error + Environment.NewLine;
-                }
-                MessageBox.Show(Errors, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -148,6 +123,40 @@ namespace gpl
                     $"Details:\n\n{ex.StackTrace}");
                 }
             }
+        }
+
+        private void cli_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                string command = cli.Text.Trim();
+                string[] tokens = command.Split(new string[] { " " }, System.StringSplitOptions.RemoveEmptyEntries);
+                if (tokens.Length == 1)
+                {
+                    SingleCommand(tokens[0]);
+                }
+
+                if (tokens.Length > 0)
+                {
+                    ProcessCommand(tokens);
+                }
+
+                foreach (var error in diagnostics)
+                {
+                    errorBag += error + Environment.NewLine;
+                }
+
+                if (errorBag.Length > 0)
+                {
+                    MessageBox.Show(errorBag, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    diagnostics.Clear();
+                    errorBag = "";
+                }
+
+                cli.Text = "";
+                e.SuppressKeyPress = true;
+            }
+
         }
     }
 }

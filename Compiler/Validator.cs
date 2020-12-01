@@ -14,12 +14,13 @@ namespace gpl.Compiler
     {
         private string[] _tokens;
         private SyntaxMap _syntaxMap;
-        public ArrayList Diagnostics = new ArrayList();
+        public ArrayList _diagnostics;
 
-        public Validator(string[] tokens)
+        public Validator(string[] tokens, ArrayList diagnostics)
         {
             _tokens = tokens;
             _syntaxMap = SyntaxMap.GetSyntaxMap();
+            _diagnostics = diagnostics;
         }
 
         public StatementSyntax Validate()
@@ -36,7 +37,7 @@ namespace gpl.Compiler
                         }
                         catch (Exception e)
                         {
-                            Diagnostics.Add($"Two Parameters required for <{_tokens[0]}>.");
+                            _diagnostics.Add($"Two Parameters required for <{_tokens[0]}>.");
                         }
                         break;
 
@@ -48,7 +49,7 @@ namespace gpl.Compiler
                         }
                         catch (Exception e)
                         {
-                            Diagnostics.Add($"Two Parameters required for <{_tokens[0]}>.");
+                            _diagnostics.Add($"Two Parameters required for <{_tokens[0]}>.");
                         }
                         break;
 
@@ -60,18 +61,18 @@ namespace gpl.Compiler
                                 PenStatementSyntax pen = new PenStatementSyntax(SyntaxKind.PenStatement, color);
                                 if(pen.Color == Color.Black)
                                 {
-                                    Diagnostics.Add($"{color} not found.");
+                                    _diagnostics.Add($"{color} not found.");
                                 }
                                 return pen;
                             }
                             else
                             {
-                                Diagnostics.Add("Color name must be alphabetic.");
+                                _diagnostics.Add("Color name must be alphabetic.");
                             }
                         }
                         catch (Exception e)
                         {
-                            Diagnostics.Add($"<{_tokens[0]}> requires a color parameter.");
+                            _diagnostics.Add($"<{_tokens[0]}> requires a color parameter.");
                         }
                         break;
 
@@ -84,18 +85,18 @@ namespace gpl.Compiler
                                 BrushStatementSyntax brush = new BrushStatementSyntax(SyntaxKind.BrushStatement, color);
                                 if (brush.Color == Color.Black)
                                 {
-                                    Diagnostics.Add($"{color} not found.");
+                                    _diagnostics.Add($"{color} not found.");
                                 }
                                 return brush;
                             }
                             else
                             {
-                                Diagnostics.Add("Color name must be alphabetic.");
+                                _diagnostics.Add("Color name must be alphabetic.");
                             }
                         }
                         catch (Exception e)
                         {
-                            Diagnostics.Add($"<{_tokens[0]}> requires a color parameter.");
+                            _diagnostics.Add($"<{_tokens[0]}> requires a color parameter.");
                         }
                         break;
 
@@ -111,17 +112,17 @@ namespace gpl.Compiler
                                 }
                                 else
                                 {
-                                    Diagnostics.Add($"<{_tokens[0]}> requires on/off parameter.");
+                                    _diagnostics.Add($"<{_tokens[0]}> requires on/off parameter.");
                                 }
                             }
                             else
                             {
-                                Diagnostics.Add($"<{_tokens[0]}> requires on/off parameter.");
+                                _diagnostics.Add($"<{_tokens[0]}> requires on/off parameter.");
                             }
                         }
                         catch (Exception e)
                         {
-                            Diagnostics.Add($"<{_tokens[0]}> requires on/off parameter.");
+                            _diagnostics.Add($"<{_tokens[0]}> requires on/off parameter.");
                         }
                         break;
 
@@ -133,7 +134,7 @@ namespace gpl.Compiler
                         }
                         catch (Exception e)
                         {
-                            Diagnostics.Add($"Two Parameters required for <{_tokens[0]}>.");
+                            _diagnostics.Add($"Two Parameters required for <{_tokens[0]}>.");
                         }
                         break;
 
@@ -154,12 +155,12 @@ namespace gpl.Compiler
                             }
                             catch (Exception e)
                             {
-                                Diagnostics.Add($"Radius must be integer. <{radius}> given.");
+                                _diagnostics.Add($"Radius must be integer. <{radius}> given.");
                             }
                         }
                         catch (Exception e)
                         {
-                            Diagnostics.Add($"Radius Parameters required for <{_tokens[0]}>.");
+                            _diagnostics.Add($"Radius Parameters required for <{_tokens[0]}>.");
                         }
                         break;
 
@@ -178,7 +179,7 @@ namespace gpl.Compiler
                         }
                         catch(Exception e)
                         {
-                            Diagnostics.Add($"Six integer Parameters required for <{_tokens[0]}>.");
+                            _diagnostics.Add($"Six integer Parameters required for <{_tokens[0]}>.");
                         }
                         break;
 
@@ -187,7 +188,7 @@ namespace gpl.Compiler
             }
             else
             {
-                Diagnostics.Add($"Command <{_tokens[0]}> doesn't exist.");
+                _diagnostics.Add($"Command <{_tokens[0]}> doesn't exist.");
             }
             return new BadSyntax();
         }
@@ -209,7 +210,7 @@ namespace gpl.Compiler
             }
             catch (Exception error)
             {
-                Diagnostics.Add($"<{_tokens[1]}> and <{_tokens[2]}> must be integers");
+                _diagnostics.Add($"<{_tokens[1]}> and <{_tokens[2]}> must be integers");
             }
            
             return point;
@@ -230,7 +231,7 @@ namespace gpl.Compiler
             }
             catch (Exception error)
             {
-                Diagnostics.Add($"<{X}> and <{Y}> must be integers");
+                _diagnostics.Add($"<{X}> and <{Y}> must be integers");
             }
             return new Point();
         }

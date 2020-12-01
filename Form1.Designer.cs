@@ -60,11 +60,12 @@
             this.cli.Font = new System.Drawing.Font("Consolas", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cli.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.cli.Location = new System.Drawing.Point(-2, 485);
+            this.cli.Multiline = false;
             this.cli.Name = "cli";
             this.cli.Size = new System.Drawing.Size(704, 89);
             this.cli.TabIndex = 1;
             this.cli.Text = "";
-            this.cli.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.cli_KeyPress);
+            this.cli.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cli_KeyDown);
             // 
             // panel
             // 
@@ -107,14 +108,14 @@
             // saveToolStripMenuItem
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(152, 26);
             this.saveToolStripMenuItem.Text = "Save File";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
             // loadFileToolStripMenuItem
             // 
             this.loadFileToolStripMenuItem.Name = "loadFileToolStripMenuItem";
-            this.loadFileToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.loadFileToolStripMenuItem.Size = new System.Drawing.Size(152, 26);
             this.loadFileToolStripMenuItem.Text = "Load File";
             this.loadFileToolStripMenuItem.Click += new System.EventHandler(this.loadFileToolStripMenuItem_Click);
             // 

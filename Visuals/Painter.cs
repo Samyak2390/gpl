@@ -74,9 +74,6 @@ namespace gpl.Visuals
                     var triangle = (TriangleStatementSyntax)_statement;
                     _canvas.Draw(triangle);
                     break;
-                default:
-                    //have to implement global diagnostics
-                    break;
             }
         }
     }

@@ -25,6 +25,9 @@ namespace gpl
         Bitmap canvasBitmap;
         Canvas visual;
         const int DEFAULT_COORDINATE = 0;
+        /// <summary>
+        /// Stores any type of errors that occur while executing commands.
+        /// </summary>
         public ArrayList diagnostics;
         string errorBag = "";
 

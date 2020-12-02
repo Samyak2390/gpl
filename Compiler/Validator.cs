@@ -18,6 +18,9 @@ namespace gpl.Compiler
     {
         private string[] _tokens;
         private SyntaxMap _syntaxMap;
+        /// <summary>
+        /// Stores any type of errors that occur while executing commands.
+        /// </summary>
         public ArrayList _diagnostics;
 
         /// <summary>
@@ -52,7 +55,7 @@ namespace gpl.Compiler
                             int[] point = GetPoint(_tokens[1], _tokens[2]);
                             return new MoveToStatementSyntax(SyntaxKind.MoveToStatement, point);
                         }
-                        catch (Exception e)
+                        catch (IndexOutOfRangeException e)
                         {
                             _diagnostics.Add($"Two Parameters required for <{_tokens[0]}>.");
                         }
@@ -64,7 +67,7 @@ namespace gpl.Compiler
                             int[] point = GetPoint(_tokens[1], _tokens[2]);
                             return new DrawToStatementSyntax(SyntaxKind.DrawToStatement, point);
                         }
-                        catch (Exception e)
+                        catch (IndexOutOfRangeException e)
                         {
                             _diagnostics.Add($"Two Parameters required for <{_tokens[0]}>.");
                         }
@@ -78,7 +81,7 @@ namespace gpl.Compiler
                                 PenStatementSyntax pen = new PenStatementSyntax(SyntaxKind.PenStatement, color);
                                 if(pen.Color == Color.Black)
                                 {
-                                    _diagnostics.Add($"{color} not found.");
+                                    _diagnostics.Add($"{color} color not found.");
                                 }
                                 return pen;
                             }
@@ -87,7 +90,7 @@ namespace gpl.Compiler
                                 _diagnostics.Add("Color name must be alphabetic.");
                             }
                         }
-                        catch (Exception e)
+                        catch (IndexOutOfRangeException e)
                         {
                             _diagnostics.Add($"<{_tokens[0]}> requires a color parameter.");
                         }
@@ -102,7 +105,7 @@ namespace gpl.Compiler
                                 BrushStatementSyntax brush = new BrushStatementSyntax(SyntaxKind.BrushStatement, color);
                                 if (brush.Color == Color.Black)
                                 {
-                                    _diagnostics.Add($"{color} not found.");
+                                    _diagnostics.Add($"{color} color not found.");
                                 }
                                 return brush;
                             }
@@ -111,7 +114,7 @@ namespace gpl.Compiler
                                 _diagnostics.Add("Color name must be alphabetic.");
                             }
                         }
-                        catch (Exception e)
+                        catch (IndexOutOfRangeException e)
                         {
                             _diagnostics.Add($"<{_tokens[0]}> requires a color parameter.");
                         }
@@ -137,7 +140,7 @@ namespace gpl.Compiler
                                 _diagnostics.Add($"<{_tokens[0]}> requires on/off parameter.");
                             }
                         }
-                        catch (Exception e)
+                        catch (IndexOutOfRangeException e)
                         {
                             _diagnostics.Add($"<{_tokens[0]}> requires on/off parameter.");
                         }
@@ -149,7 +152,7 @@ namespace gpl.Compiler
                             int[] size = GetPoint(_tokens[1], _tokens[2]);
                             return new RectangleStatementSyntax(SyntaxKind.RectangleStatement, size);
                         }
-                        catch (Exception e)
+                        catch (IndexOutOfRangeException e)
                         {
                             _diagnostics.Add($"Two Parameters required for <{_tokens[0]}>.");
                         }
@@ -167,15 +170,15 @@ namespace gpl.Compiler
                                 }
                                 else
                                 {
-                                    throw new Exception();
+                                    throw new FormatException();
                                 }
                             }
-                            catch (Exception e)
+                            catch (FormatException e)
                             {
                                 _diagnostics.Add($"Radius must be integer. <{radius}> given.");
                             }
                         }
-                        catch (Exception e)
+                        catch (IndexOutOfRangeException e)
                         {
                             _diagnostics.Add($"Radius Parameters required for <{_tokens[0]}>.");
                         }
@@ -194,7 +197,7 @@ namespace gpl.Compiler
                                 return new TriangleStatementSyntax(SyntaxKind.TriangleStatement, vertices);
                             }
                         }
-                        catch(Exception e)
+                        catch(IndexOutOfRangeException e)
                         {
                             _diagnostics.Add($"Six integer Parameters required for <{_tokens[0]}>.");
                         }
@@ -228,10 +231,10 @@ namespace gpl.Compiler
                 }
                 else
                 {
-                    throw new Exception();
+                    throw new FormatException();
                 }
             }
-            catch (Exception error)
+            catch (FormatException error)
             {
                 _diagnostics.Add($"<{_tokens[1]}> and <{_tokens[2]}> must be integers");
             }
@@ -255,10 +258,10 @@ namespace gpl.Compiler
                 }
                 else
                 {
-                    throw new Exception();
+                    throw new FormatException();
                 }
             }
-            catch (Exception error)
+            catch (FormatException error)
             {
                 _diagnostics.Add($"<{X}> and <{Y}> must be integers");
             }

@@ -93,6 +93,7 @@ namespace gpl
             foreach(string line in lines)
             {
                 string trimmedLine = line.Trim();
+
                 string[] tokensArray = ParseCommand(trimmedLine);
                 ProcessCommand(tokensArray);
             }

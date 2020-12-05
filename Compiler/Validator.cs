@@ -7,6 +7,8 @@ using System.Collections;
 using gpl.Compiler.Syntax;
 using System.Text.RegularExpressions;
 using System.Drawing;
+using System.Data;
+using System.Windows.Forms;
 
 namespace gpl.Compiler
 {
@@ -18,6 +20,9 @@ namespace gpl.Compiler
     {
         private string[] _tokens;
         private SyntaxMap _syntaxMap;
+        private string _rawCommand;
+        private bool _commandFound;
+        private Dictionary<string, int> _varMap;
         /// <summary>
         /// Stores any type of errors that occur while executing commands.
         /// </summary>
@@ -29,11 +34,14 @@ namespace gpl.Compiler
         /// </summary>
         /// <param name="tokens"></param>
         /// <param name="diagnostics"></param>
-        public Validator(string[] tokens, ArrayList diagnostics)
+        /// <param name="rawCommand"></param>
+        public Validator(string[] tokens, ArrayList diagnostics, string rawCommand, Dictionary<string, int> varMap)
         {
             _tokens = tokens;
             _syntaxMap = SyntaxMap.GetSyntaxMap();
             _diagnostics = diagnostics;
+            _rawCommand = rawCommand;
+            _varMap = varMap;
         }
 
         /// <summary>
@@ -43,7 +51,7 @@ namespace gpl.Compiler
         /// <returns></returns>
         public StatementSyntax Validate()
         {
-            //checking proved command against listed commands in hash map
+            //checking provided command against listed commands in hash map
             if (_syntaxMap.HasSyntax(_tokens[0].ToLower()))
             {
                 //Finding the type of the command and returning its object with provide parameters as its properties
@@ -52,7 +60,13 @@ namespace gpl.Compiler
                     case SyntaxKind.MoveToStatement:
                         try
                         {
-                            int[] point = GetPoint(_tokens[1], _tokens[2]);
+                            int? point1 = EvaluateVariable(_tokens[1]);
+                            int? point2 = EvaluateVariable(_tokens[2]);
+                            
+                            string pointX = point1 == null ? _tokens[1] : point1.ToString();
+                            string pointY = point2 == null ? _tokens[2] : point2.ToString();
+                            int[] point = GetPoint(pointX, pointY);
+                            _commandFound = true;
                             return new MoveToStatementSyntax(SyntaxKind.MoveToStatement, point);
                         }
                         catch (IndexOutOfRangeException e)
@@ -64,7 +78,13 @@ namespace gpl.Compiler
                     case SyntaxKind.DrawToStatement:
                         try
                         {
-                            int[] point = GetPoint(_tokens[1], _tokens[2]);
+                            int? point1 = EvaluateVariable(_tokens[1]);
+                            int? point2 = EvaluateVariable(_tokens[2]);
+
+                            string pointX = point1 == null ? _tokens[1] : point1.ToString();
+                            string pointY = point2 == null ? _tokens[2] : point2.ToString();
+                            int[] point = GetPoint(pointX, pointY);
+                            _commandFound = true;
                             return new DrawToStatementSyntax(SyntaxKind.DrawToStatement, point);
                         }
                         catch (IndexOutOfRangeException e)
@@ -78,6 +98,7 @@ namespace gpl.Compiler
                         {
                             if(Regex.IsMatch(_tokens[1], @"^[a-zA-Z]+$")){
                                 string color = _tokens[1];
+                                _commandFound = true;
                                 PenStatementSyntax pen = new PenStatementSyntax(SyntaxKind.PenStatement, color);
                                 if(pen.Color == Color.Black)
                                 {
@@ -103,6 +124,7 @@ namespace gpl.Compiler
                             {
                                 string color = _tokens[1];
                                 BrushStatementSyntax brush = new BrushStatementSyntax(SyntaxKind.BrushStatement, color);
+                                _commandFound = true;
                                 if (brush.Color == Color.Black)
                                 {
                                     _diagnostics.Add($"{color} color not found.");
@@ -123,10 +145,11 @@ namespace gpl.Compiler
                     case SyntaxKind.FillStatement:
                         try
                         {
-                            if (Regex.IsMatch(_tokens[1], @"^[a-zA-Z]"))
+                            if (Regex.IsMatch(_tokens[1], @"^[a-zA-Z]+$"))
                             {
                                 string state = _tokens[1];
-                                if(state.Equals("on") || state.Equals("off"))
+                                _commandFound = true;
+                                if (state.Equals("on") || state.Equals("off"))
                                 {
                                     return new FillStatementSyntax(SyntaxKind.FillStatement, state);
                                 }
@@ -149,7 +172,13 @@ namespace gpl.Compiler
                     case SyntaxKind.RectangleStatement:
                         try
                         {
-                            int[] size = GetPoint(_tokens[1], _tokens[2]);
+                            int? width = EvaluateVariable(_tokens[1]);
+                            int? height = EvaluateVariable(_tokens[2]);
+
+                            string widthX = width == null ? _tokens[1] : width.ToString();
+                            string heightY = height == null ? _tokens[2] : height.ToString();
+                            int[] size = GetPoint(widthX, heightY);
+                            _commandFound = true;
                             return new RectangleStatementSyntax(SyntaxKind.RectangleStatement, size);
                         }
                         catch (IndexOutOfRangeException e)
@@ -161,7 +190,10 @@ namespace gpl.Compiler
                     case SyntaxKind.CircleStatement:
                         try
                         {
-                            string radius = _tokens[1];
+                            int? size = EvaluateVariable(_tokens[1]);
+                            string radius = size == null ? _tokens[1] : size.ToString();
+                            //check radius is a-zA-Z and is acutally a variable
+                            _commandFound = true;
                             try
                             {
                                 if (int.TryParse(radius, out var r))
@@ -187,11 +219,26 @@ namespace gpl.Compiler
                     case SyntaxKind.TriangleStatement:
                         try
                         {
-                            Point vertex1 = GetVertex(_tokens[1], _tokens[2]);
-                            Point vertex2 = GetVertex(_tokens[3], _tokens[4]);
-                            Point vertex3 = GetVertex(_tokens[5], _tokens[6]);
+                            int? vertexA = EvaluateVariable(_tokens[1]);
+                            int? vertexB = EvaluateVariable(_tokens[2]);
+                            int? vertexC = EvaluateVariable(_tokens[3]);
+                            int? vertexD = EvaluateVariable(_tokens[4]);
+                            int? vertexE = EvaluateVariable(_tokens[5]);
+                            int? vertexF = EvaluateVariable(_tokens[6]);
 
-                            if(!(vertex1.IsEmpty || vertex2.IsEmpty || vertex3.IsEmpty))
+                            string vertexa = vertexA == null ? _tokens[1] : vertexA.ToString();
+                            string vertexb = vertexB == null ? _tokens[2] : vertexB.ToString();
+                            string vertexc = vertexC == null ? _tokens[3] : vertexC.ToString();
+                            string vertexd = vertexD == null ? _tokens[4] : vertexD.ToString();
+                            string vertexe = vertexE == null ? _tokens[5] : vertexE.ToString();
+                            string vertexf = vertexF == null ? _tokens[6] : vertexF.ToString();
+
+                            Point vertex1 = GetVertex(vertexa, vertexb);
+                            Point vertex2 = GetVertex(vertexc, vertexd);
+                            Point vertex3 = GetVertex(vertexe, vertexf);
+                            _commandFound = true;
+
+                            if (!(vertex1.IsEmpty || vertex2.IsEmpty || vertex3.IsEmpty))
                             {
                                 Point[] vertices = { vertex1, vertex2, vertex3 };
                                 return new TriangleStatementSyntax(SyntaxKind.TriangleStatement, vertices);
@@ -202,15 +249,34 @@ namespace gpl.Compiler
                             _diagnostics.Add($"Six integer Parameters required for <{_tokens[0]}>.");
                         }
                         break;
-
-
                 }
+            }
+            else if (Regex.IsMatch(_rawCommand, @"^[a-zA-Z]+[\s]*=") && !_commandFound)
+            {
+                CheckIfVariable(_rawCommand);
             }
             else
             {
                 _diagnostics.Add($"Command <{_tokens[0]}> doesn't exist.");
             }
             return new BadSyntax();
+        }
+
+        
+        private int? EvaluateVariable(string variable)
+        {
+            if (Regex.IsMatch(variable, @"[a-zA-Z]+"))
+            {
+                try
+                {
+                    return _varMap[variable];
+                }
+                catch (KeyNotFoundException e)
+                {
+                    _diagnostics.Add($"Undefined Variable: {_tokens[1]}");
+                }
+            }
+            return null;
         }
 
         /// <summary>
@@ -266,6 +332,101 @@ namespace gpl.Compiler
                 _diagnostics.Add($"<{X}> and <{Y}> must be integers");
             }
             return new Point();
+        }
+
+        private void CheckIfVariable(string rawCommand)
+        {
+            try
+            {
+                string[] varTokens = rawCommand.Split(new string[] { "=" }, System.StringSplitOptions.RemoveEmptyEntries);
+                string expression = varTokens[1].Trim();
+                string variableName = varTokens[0].Trim();
+                if (int.TryParse(expression, out var num)){
+                    if (_varMap.ContainsKey(variableName))
+                    {
+                        _varMap[variableName] = num;
+                    }
+                    else
+                    {
+                        _varMap.Add(variableName, num);
+                    }
+                }
+                else if(Regex.IsMatch(expression, @"^[^a-zA-Z]+$"))
+                {
+                    bool a = true;
+                    int result = Convert.ToInt32(new DataTable().Compute(expression, null));
+                    if (_varMap.ContainsKey(variableName))
+                    {
+                        _varMap[variableName] = result;
+                    }
+                    else
+                    {
+                        _varMap.Add(variableName, result);
+                    }
+                }
+                else
+                {
+                    List<string> variables = new List<string>();
+                    string tempVar = "";
+                    string newExpression = "";
+
+                    foreach (char c in expression)
+                    {
+                        if (!Regex.IsMatch(c.ToString(), @"^[+\-\/*\s]+$"))
+                        {
+                            tempVar += c;
+                        }
+                        else
+                        {
+                            if (tempVar.Length >= 1) variables.Add(tempVar);
+                            tempVar = "";
+                        }
+                    }
+                    if (tempVar.Length >= 1) variables.Add(tempVar);
+
+                    foreach (string variable in variables)
+                    {
+                        if(Regex.IsMatch(variable, @"^[a-zA-Z]+$"))
+                        {
+                            if (_varMap.ContainsKey(variable))
+                            {
+                                int value = _varMap[variable];
+                                if (newExpression.Length <= 0)
+                                    newExpression = expression.Replace(variable, value.ToString());
+                                else
+                                    newExpression = newExpression.Replace(variable, value.ToString());
+                            }
+                            else
+                            {
+                                _diagnostics.Add($"Undefined variable: {variable}.");
+                            }
+                        }
+
+                    }
+
+                    if(newExpression.Length >= 1 && Regex.IsMatch(newExpression, @"^[^a-zA-Z]+$"))
+                    {
+                        int result = Convert.ToInt32(new DataTable().Compute(newExpression, null));
+                        if (_varMap.ContainsKey(variableName))
+                        {
+                            _varMap[variableName] = result;
+                        }
+                        else
+                        {
+                            _varMap.Add(variableName, result);
+                        }
+                    }
+
+                }
+            }
+            catch (EvaluateException e)
+            {
+                _diagnostics.Add("Invalid Expression." );
+            }
+            catch(SyntaxErrorException error)
+            {
+                _diagnostics.Add($"Invalid Syntax: <{rawCommand}> for variable initialization.");
+            }
         }
 
     }

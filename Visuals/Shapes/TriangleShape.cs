@@ -13,7 +13,7 @@ namespace gpl.Visuals.Shapes
     /// </summary>
     class TriangleShape: Shape
     {
-        private Point[] _vertices;
+        public Point[] Vertices { get; }
         private Graphics _graphics;
         private bool _fillState;
 
@@ -25,7 +25,7 @@ namespace gpl.Visuals.Shapes
         /// <param name="state">Fill State</param>
         public TriangleShape(TriangleStatementSyntax triangle, Graphics graphics, bool state)
         {
-            _vertices = triangle.Vertices;
+            Vertices = triangle.Vertices;
             _graphics = graphics;
             _fillState = state;
         }
@@ -41,11 +41,11 @@ namespace gpl.Visuals.Shapes
         {
             if (_fillState)
             {
-                _graphics.FillPolygon(brush, _vertices);
+                _graphics.FillPolygon(brush, Vertices);
             }
             else
             {
-                _graphics.DrawPolygon(pen, _vertices);
+                _graphics.DrawPolygon(pen, Vertices);
             }
         }
     }

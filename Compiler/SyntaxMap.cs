@@ -16,6 +16,10 @@ namespace gpl.Compiler
         private Dictionary<string, SyntaxKind> Commands;
 
         private static object syncLock = new object();
+
+        /// <summary>
+        /// Constructor that initializes Commands hashmap with available commands.
+        /// </summary>
         protected SyntaxMap()
         {
             Commands = new Dictionary<string, SyntaxKind>
@@ -25,7 +29,7 @@ namespace gpl.Compiler
                 {"reset", SyntaxKind.ResetStatement },
                 {"clear", SyntaxKind.ClearStatement },
                 {"pen", SyntaxKind.PenStatement },
-                {"rectangle", SyntaxKind.RectangleStatement },
+                {"rect", SyntaxKind.RectangleStatement },
                 {"brush", SyntaxKind.BrushStatement },
                 {"fill", SyntaxKind.FillStatement },
                 {"circle", SyntaxKind.CircleStatement },
@@ -34,6 +38,10 @@ namespace gpl.Compiler
             };
         }
 
+        /// <summary>
+        /// Provides the instance of Singleton SyntaxMap.
+        /// </summary>
+        /// <returns>Instance of Singleton SyntaxMap.</returns>
         public static SyntaxMap GetSyntaxMap()
         {
             if(_instance == null)
@@ -49,11 +57,21 @@ namespace gpl.Compiler
             return _instance;
         }
 
+        /// <summary>
+        /// Checks whether the given string is a valid command.
+        /// </summary>
+        /// <param name="syntax">String to be checked for valid command.</param>
+        /// <returns>true if command is valid, false otherwise.</returns>
         public bool HasSyntax(string syntax)
         {
             return Commands.ContainsKey(syntax);
         }
 
+        /// <summary>
+        /// Provides the kind of the command.
+        /// </summary>
+        /// <param name="syntax">String for which kind is required.</param>
+        /// <returns>Enum type of syntax kind.</returns>
         public SyntaxKind GetKind(string syntax)
         {
             if (HasSyntax(syntax)) return Commands[syntax];

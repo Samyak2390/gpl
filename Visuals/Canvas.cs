@@ -126,7 +126,8 @@ namespace gpl.Visuals
                 case TriangleStatementSyntax triangleSyntax:
                     TriangleShape triangle = (TriangleShape)ShapeFactory.GetShape(triangleSyntax, _graphics, _fillState);
                     triangle.Draw(_pen, _brush, X, Y);
-                    MoveTo(X, Y);
+                    Point point = triangle.Vertices[2];
+                    MoveTo(point.X, point.Y);
                     break;
             }
         }

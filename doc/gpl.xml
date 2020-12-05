@@ -10,6 +10,31 @@
             available commands and its respective type.
             </summary>
         </member>
+        <member name="M:gpl.Compiler.SyntaxMap.#ctor">
+            <summary>
+            Constructor that initializes Commands hashmap with available commands.
+            </summary>
+        </member>
+        <member name="M:gpl.Compiler.SyntaxMap.GetSyntaxMap">
+            <summary>
+            Provides the instance of Singleton SyntaxMap.
+            </summary>
+            <returns>Instance of Singleton SyntaxMap.</returns>
+        </member>
+        <member name="M:gpl.Compiler.SyntaxMap.HasSyntax(System.String)">
+            <summary>
+            Checks whether the given string is a valid command.
+            </summary>
+            <param name="syntax">String to be checked for valid command.</param>
+            <returns>true if command is valid, false otherwise.</returns>
+        </member>
+        <member name="M:gpl.Compiler.SyntaxMap.GetKind(System.String)">
+            <summary>
+            Provides the kind of the command.
+            </summary>
+            <param name="syntax">String for which kind is required.</param>
+            <returns>Enum type of syntax kind.</returns>
+        </member>
         <member name="T:gpl.Compiler.SyntaxKind">
             <summary>
             Enum type enumerating the type of available commands.
@@ -146,13 +171,19 @@
             if validation passes. Otherwise, returns the list of errors occured as a string.
             </summary>
         </member>
-        <member name="M:gpl.Compiler.Validator.#ctor(System.String[],System.Collections.ArrayList)">
+        <member name="F:gpl.Compiler.Validator._diagnostics">
+            <summary>
+            Stores any type of errors that occur while executing commands.
+            </summary>
+        </member>
+        <member name="M:gpl.Compiler.Validator.#ctor(System.String[],System.Collections.ArrayList,System.String,System.Collections.Generic.Dictionary{System.String,System.Int32})">
             <summary>
             Constructor that initializes mappings of available commands and their types,
             along with the passed reference of diagnostics and array of command.
             </summary>
             <param name="tokens"></param>
             <param name="diagnostics"></param>
+            <param name="rawCommand"></param>
         </member>
         <member name="M:gpl.Compiler.Validator.Validate">
             <summary>
@@ -181,6 +212,11 @@
             <summary>
             Main Form Class to initialize all components like textbox, picture box etc.
             It contains code for all event driven programmes.
+            </summary>
+        </member>
+        <member name="F:gpl.Form1.diagnostics">
+            <summary>
+            Stores any type of errors that occur while executing commands.
             </summary>
         </member>
         <member name="M:gpl.Form1.#ctor">
@@ -228,6 +264,13 @@
             </summary>
             <param name="sender">Instance of object class</param>
             <param name="e">Click Event Arguments</param>
+        </member>
+        <member name="M:gpl.Form1.ParseCommand(System.String)">
+            <summary>
+            Takes a line of command and breaks it down to the array of tokens.
+            </summary>
+            <param name="rawCommand">A line of command</param>
+            <returns>An array of string with expected commands and its parameters</returns>
         </member>
         <member name="M:gpl.Form1.cli_KeyDown(System.Object,System.Windows.Forms.KeyEventArgs)">
             <summary>

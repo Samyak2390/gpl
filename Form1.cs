@@ -13,6 +13,7 @@ using gpl.Visuals;
 using System.IO;
 using System.Security;
 using System.Collections;
+using System.Text.RegularExpressions;
 
 namespace gpl
 {
@@ -25,6 +26,8 @@ namespace gpl
         Bitmap canvasBitmap;
         Canvas visual;
         const int DEFAULT_COORDINATE = 0;
+        string rawCommand;
+        Dictionary<string, int> _varMap = new Dictionary<string, int>();
         /// <summary>
         /// Stores any type of errors that occur while executing commands.
         /// </summary>
@@ -91,9 +94,11 @@ namespace gpl
             foreach(string line in lines)
             {
                 string trimmedLine = line.Trim();
-                string[] tokens = trimmedLine.Split(new string[] { " " }, System.StringSplitOptions.RemoveEmptyEntries);
-                ProcessCommand(tokens);
+                string[] tokensArray = ParseCommand(trimmedLine);
+                rawCommand = trimmedLine;
+                ProcessCommand(tokensArray);
             }
+            _varMap.Clear();
         }
 
         /// <summary>
@@ -103,7 +108,7 @@ namespace gpl
         /// <param name="tokens"></param>
         public void ProcessCommand(string[] tokens)
         {
-            Validator valid = new Validator(tokens, diagnostics);
+            Validator valid = new Validator(tokens, diagnostics, rawCommand, _varMap);
             StatementSyntax statement = valid.Validate();
             Painter painter = new Painter(visual, statement);
 
@@ -167,6 +172,36 @@ namespace gpl
             }
         }
 
+
+        /// <summary>
+        /// Takes a line of command and breaks it down to the array of tokens.
+        /// </summary>
+        /// <param name="rawCommand">A line of command</param>
+        /// <returns>An array of string with expected commands and its parameters</returns>
+        private string[] ParseCommand(string rawCommand)
+        {
+            ArrayList tokens = new ArrayList();
+            string temp = "";
+
+            foreach (char c in rawCommand)
+            {
+                if (!Regex.IsMatch(c.ToString(), @"^[,\s]+$"))
+                {
+                    temp += c;
+                }
+                else
+                {
+                    if (temp.Length >= 1) tokens.Add(temp);
+                    temp = "";
+                }
+            }
+
+            if (temp.Length >= 1) tokens.Add(temp);
+            temp = "";
+
+            return (string[])tokens.ToArray(typeof(string));
+        }
+
         /// <summary>
         /// Key down event which is executed in press of Enter from keyboard.
         /// Decides which type of command to executes and shows errors from commands
@@ -178,16 +213,17 @@ namespace gpl
         {
             if (e.KeyCode == Keys.Enter)
             {
-                string command = cli.Text.Trim();
-                string[] tokens = command.Split(new string[] { " " }, System.StringSplitOptions.RemoveEmptyEntries);
-                if (tokens.Length == 1)
+                rawCommand = cli.Text.Trim();
+                string[] tokensArray = ParseCommand(rawCommand);
+
+                if (tokensArray.Length == 1)
                 {
-                    SingleCommand(tokens[0]);
+                    SingleCommand(tokensArray[0]);
                 }
 
-                if (tokens.Length > 0)
+                if (tokensArray.Length > 0)
                 {
-                    ProcessCommand(tokens);
+                    ProcessCommand(tokensArray);
                 }
 
                 foreach (var error in diagnostics)

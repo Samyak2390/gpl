@@ -27,6 +27,8 @@ namespace gpl
         Canvas visual;
         const int DEFAULT_COORDINATE = 0;
         string rawCommand;
+        string[] rawLines;
+        public static int executingLine { get; set; }
         Dictionary<string, int> _varMap = new Dictionary<string, int>();
         /// <summary>
         /// Stores any type of errors that occur while executing commands.
@@ -90,13 +92,15 @@ namespace gpl
         /// </summary>
         public void ProcessCommands()
         {
-            string[] lines = editor.Text.Split(new string[] { "\n" }, System.StringSplitOptions.RemoveEmptyEntries);
-            foreach(string line in lines)
+            rawLines = editor.Text.Split(new string[] { "\n" }, System.StringSplitOptions.RemoveEmptyEntries);
+            executingLine = 0;
+            while(executingLine < rawLines.Length)
             {
-                string trimmedLine = line.Trim();
+                string trimmedLine = rawLines[executingLine].Trim();
                 string[] tokensArray = ParseCommand(trimmedLine);
                 rawCommand = trimmedLine;
                 ProcessCommand(tokensArray);
+                executingLine++;
             }
             _varMap.Clear();
         }
@@ -108,8 +112,19 @@ namespace gpl
         /// <param name="tokens"></param>
         public void ProcessCommand(string[] tokens)
         {
-            Validator valid = new Validator(tokens, diagnostics, rawCommand, _varMap);
+            Validator valid = new Validator(tokens, diagnostics, rawCommand, _varMap, rawLines, executingLine);
             StatementSyntax statement = valid.Validate();
+            if (statement.Kind == SyntaxKind.IfStatement)
+            {
+                IfStatementSyntax ifStatement = (IfStatementSyntax)statement;
+                if (ifStatement.Run != null && (bool)ifStatement.Run)
+                {
+                    foreach(string[] command in ifStatement.Body)
+                    {
+                        ProcessCommand(command);
+                    }
+                }
+            }
             Painter painter = new Painter(visual, statement);
 
             if (diagnostics.Count <= 0)

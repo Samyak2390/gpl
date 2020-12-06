@@ -35,6 +35,7 @@ namespace gpl.Compiler
                 {"circle", SyntaxKind.CircleStatement },
                 {"triangle", SyntaxKind.TriangleStatement },
                 {"run", SyntaxKind.RunStatement },
+                { "if", SyntaxKind.IfStatement},
             };
         }
 

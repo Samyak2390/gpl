@@ -21,7 +21,9 @@ namespace gpl.Compiler
         private string[] _tokens;
         private SyntaxMap _syntaxMap;
         private string _rawCommand;
+        private string[] _rawLines;
         private bool _commandFound;
+        private int _executingLine;
         private Dictionary<string, int> _varMap;
         /// <summary>
         /// Stores any type of errors that occur while executing commands.
@@ -35,13 +37,15 @@ namespace gpl.Compiler
         /// <param name="tokens"></param>
         /// <param name="diagnostics"></param>
         /// <param name="rawCommand"></param>
-        public Validator(string[] tokens, ArrayList diagnostics, string rawCommand, Dictionary<string, int> varMap)
+        public Validator(string[] tokens, ArrayList diagnostics, string rawCommand, Dictionary<string, int> varMap, string[] rawLines, int executingLine)
         {
             _tokens = tokens;
             _syntaxMap = SyntaxMap.GetSyntaxMap();
             _diagnostics = diagnostics;
             _rawCommand = rawCommand;
             _varMap = varMap;
+            _rawLines = rawLines;
+            _executingLine = executingLine;
         }
 
         /// <summary>
@@ -57,6 +61,52 @@ namespace gpl.Compiler
                 //Finding the type of the command and returning its object with provide parameters as its properties
                 switch (_syntaxMap.GetKind(_tokens[0].ToLower()))
                 {
+                    case SyntaxKind.IfStatement:
+                        try
+                        {
+                            List<string[]> body = new List<string[]>();
+
+                            int? value1 = EvaluateVariable(_tokens[1]);
+                            int? value2 = EvaluateVariable(_tokens[3]);
+
+                            string firstValue = value1 == null ? _tokens[1] : value1.ToString();
+                            string secondValue = value2 == null ? _tokens[3] : value2.ToString();
+
+                            string[] condition = ValidateCondition(firstValue, _tokens[2], secondValue);
+
+                            if (_diagnostics.Count > 0) break;
+
+                            if (_tokens.Length >= 5) //Process for single line if statement
+                            {
+                                List<string> tempStatement = new List<string>();
+                                for(int i = 4; i<_tokens.Length; i++)
+                                {
+                                    tempStatement.Add(_tokens[i]);
+                                }
+                                body.Add(tempStatement.ToArray());
+                            }
+                            else
+                            {
+                                _executingLine++;
+                                while (_rawLines[_executingLine] != "endif")
+                                {
+                                    body.Add(ParseCommand(_rawLines[_executingLine]));
+                                    _executingLine++;
+                                }
+                                Form1.executingLine = _executingLine;
+                                //MessageBox.Show(_rawLines[_executingLine]);
+                                //break;
+                            }
+
+                            return new IfStatementSyntax(SyntaxKind.IfStatement, condition, body);
+
+                        }catch(Exception e)
+                        {
+                            //_diagnostics.Add();
+                            MessageBox.Show(e.Message);
+                        }
+                        break;
+
                     case SyntaxKind.MoveToStatement:
                         try
                         {
@@ -262,7 +312,62 @@ namespace gpl.Compiler
             return new BadSyntax();
         }
 
-        
+        private string[] ParseCommand(string rawCommand)
+        {
+            ArrayList tokens = new ArrayList();
+            string temp = "";
+
+            foreach (char c in rawCommand)
+            {
+                if (!Regex.IsMatch(c.ToString(), @"^[,\s]+$"))
+                {
+                    temp += c;
+                }
+                else
+                {
+                    if (temp.Length >= 1) tokens.Add(temp);
+                    temp = "";
+                }
+            }
+
+            if (temp.Length >= 1) tokens.Add(temp);
+            temp = "";
+
+            return (string[])tokens.ToArray(typeof(string));
+        }
+
+        private string[] ValidateCondition(string firstValue, string compareOperator, string secondValue)
+        {
+            List<string> condition = new List<string>();
+            if (int.TryParse(firstValue, out var value))
+            {
+                condition.Add(firstValue);
+            }
+            else
+            {
+                _diagnostics.Add(firstValue + " should be integer");
+            }
+
+            if (compareOperator == "<=" || compareOperator == "==" || compareOperator == ">=" || compareOperator == ">" || compareOperator == "<" || compareOperator == "!=")
+            {
+                condition.Add(compareOperator);
+            }
+            else
+            {
+                _diagnostics.Add(compareOperator + " is invalid Conditional Operator.");
+            }
+
+            if (int.TryParse(secondValue, out var valuee))
+            {
+                condition.Add(secondValue);
+            }
+            else
+            {
+                _diagnostics.Add(secondValue + "should be integer");
+            }
+            return condition.ToArray();
+        }
+
         private int? EvaluateVariable(string variable)
         {
             if (Regex.IsMatch(variable, @"[a-zA-Z]+"))

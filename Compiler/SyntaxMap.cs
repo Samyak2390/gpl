@@ -36,6 +36,7 @@ namespace gpl.Compiler
                 {"triangle", SyntaxKind.TriangleStatement },
                 {"run", SyntaxKind.RunStatement },
                 { "if", SyntaxKind.IfStatement},
+                { "while", SyntaxKind.WhileStatement},
             };
         }
 

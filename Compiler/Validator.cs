@@ -61,6 +61,45 @@ namespace gpl.Compiler
                 //Finding the type of the command and returning its object with provide parameters as its properties
                 switch (_syntaxMap.GetKind(_tokens[0].ToLower()))
                 {
+                    case SyntaxKind.WhileStatement:
+                        try
+                        {
+                            List<string[]> body = new List<string[]>();
+
+                            int? value1 = EvaluateVariable(_tokens[1]);
+                            int? value2 = EvaluateVariable(_tokens[3]);
+
+                            string firstValue = value1 == null ? _tokens[1] : value1.ToString();
+                            string secondValue = value2 == null ? _tokens[3] : value2.ToString();
+
+                            string[] condition = ValidateCondition(firstValue, _tokens[2], secondValue);
+
+                            if (_diagnostics.Count > 0) break;
+
+                            _executingLine++;
+                            while (_rawLines[_executingLine] != "endloop")
+                            {
+                                if (Regex.IsMatch(_rawLines[_executingLine].Replace("\t", ""), @"^[a-zA-Z]+[\s]*="))
+                                {
+                                    body.Add(new string[] { _rawLines[_executingLine].Replace("\t", "") });
+                                }
+                                else
+                                {
+                                    body.Add(ParseCommand(_rawLines[_executingLine]));
+                                }
+                                _executingLine++;
+                            }
+                            Form1.executingLine = _executingLine;
+
+                            return new WhileStatement(SyntaxKind.WhileStatement, condition, body, _tokens[1], _tokens[2], _tokens[3]);
+
+                        }
+                        catch (Exception e)
+                        {
+                            MessageBox.Show(e.Message);
+                        }
+                        break;
+
                     case SyntaxKind.IfStatement:
                         try
                         {

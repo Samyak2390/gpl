@@ -60,6 +60,7 @@
     <Compile Include="Compiler\Syntax\StatementSyntax.cs" />
     <Compile Include="Compiler\Syntax\MoveToStatementSyntax.cs" />
     <Compile Include="Compiler\Syntax\TriangleStatementSyntax.cs" />
+    <Compile Include="Compiler\Syntax\WhileStatement.cs" />
     <Compile Include="Compiler\Validator.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>

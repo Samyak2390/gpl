@@ -125,11 +125,75 @@ namespace gpl
                     }
                 }
             }
-            Painter painter = new Painter(visual, statement);
-
-            if (diagnostics.Count <= 0)
+            else if (statement.Kind == SyntaxKind.WhileStatement)
             {
-                painter.Paint();
+                WhileStatement whileStatement = (WhileStatement)statement;
+                string variable1 = whileStatement.Variable1;
+                string variable2 = whileStatement.Variable2;
+                int? num1=null, num2=null;
+                if (int.TryParse(variable1, out var var1))
+                {
+                    num1 = var1;
+                }
+                else
+                {
+                    if (_varMap.ContainsKey(variable1))
+                    {
+                        num1 = _varMap[variable1];
+                    }
+                }
+                if (int.TryParse(variable2, out var var2))
+                {
+                    num2 = var2;
+                }
+                else
+                {
+                    if (_varMap.ContainsKey(variable2))
+                    {
+                        num1 = _varMap[variable2];
+                    }
+                }
+
+                while ((bool)whileStatement.Run((int)num1, (int)num2))
+                {
+                    foreach (string[] command in whileStatement.Body)
+                    {
+                        if (command.Length == 1) rawCommand = command[0];
+                        ProcessCommand(command);
+                    }
+
+                    if (int.TryParse(variable1, out var var11))
+                    {
+                        num1 = var11;
+                    }
+                    else
+                    {
+                        if (_varMap.ContainsKey(variable1))
+                        {
+                            num1 = _varMap[variable1];
+                        }
+                    }
+                    if (int.TryParse(variable2, out var var22))
+                    {
+                        num2 = var22;
+                    }
+                    else
+                    {
+                        if (_varMap.ContainsKey(variable2))
+                        {
+                            num1 = _varMap[variable2];
+                        }
+                    }
+                }
+            }
+            else
+            {
+                Painter painter = new Painter(visual, statement);
+
+                if (diagnostics.Count <= 0)
+                {
+                    painter.Paint();
+                }
             }
         }
 

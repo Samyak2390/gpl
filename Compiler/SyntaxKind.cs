@@ -24,6 +24,7 @@ namespace gpl.Compiler
         CircleStatement,
         TriangleStatement,
         VariableExpression,
-        IfStatement
+        IfStatement,
+        WhileStatement
     }
 }

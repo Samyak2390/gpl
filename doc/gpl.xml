@@ -237,7 +237,7 @@
             </summary>
             <param name="token">Command to be executed</param>
         </member>
-        <member name="M:gpl.Form1.ProcessCommands">
+        <member name="M:gpl.Form1.ProcessCommands(System.String)">
             <summary>
             Method that executes multiline commands
             </summary>

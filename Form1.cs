@@ -30,6 +30,7 @@ namespace gpl
         string[] rawLines;
         public static int executingLine { get; set; }
         Dictionary<string, int> _varMap = new Dictionary<string, int>();
+        Dictionary<string, Method> _methodMap = new Dictionary<string, Method>();
         /// <summary>
         /// Stores any type of errors that occur while executing commands.
         /// </summary>
@@ -90,9 +91,17 @@ namespace gpl
         /// <summary>
         /// Method that executes multiline commands
         /// </summary>
-        public void ProcessCommands()
+        public void ProcessCommands(string methodBody = "")
         {
-            rawLines = editor.Text.Split(new string[] { "\n" }, System.StringSplitOptions.RemoveEmptyEntries);
+            if(methodBody.Length > 0)
+            {
+                rawLines = methodBody.Split(new string[] { "\n" }, System.StringSplitOptions.RemoveEmptyEntries);
+            }
+            else
+            {
+                rawLines = editor.Text.Split(new string[] { "\n" }, System.StringSplitOptions.RemoveEmptyEntries);
+            }
+            
             executingLine = 0;
             while(executingLine < rawLines.Length)
             {
@@ -121,8 +130,53 @@ namespace gpl
                 {
                     foreach(string[] command in ifStatement.Body)
                     {
+                        if (command.Length == 1) rawCommand = command[0];
                         ProcessCommand(command);
                     }
+                }
+            }
+            else if (statement.Kind == SyntaxKind.MethodCall)
+            {
+                MethodCall methodCall = (MethodCall)statement;
+                if (_methodMap.ContainsKey(methodCall.MethodName))
+                {
+                    Method method = _methodMap[methodCall.MethodName];
+                    if(method.Parameters.Length == methodCall.Parameters.Length)
+                    {
+                        for (int i = 0; i< method.Parameters.Length; i++)
+                        {
+                            if (_varMap.ContainsKey(method.Parameters[i]))
+                            {
+                                _varMap[method.Parameters[i]] = Convert.ToInt32(methodCall.Parameters[i]);
+                            }
+                            else
+                            {
+                                _varMap.Add(method.Parameters[i], Convert.ToInt32(methodCall.Parameters[i]));
+                            }
+                        }
+                    }
+                    else
+                    {
+                        diagnostics.Add($"Unequal no. of parameters in  <{methodCall.MethodName}> and <{method.MethodName}>.");
+                    }
+                    ProcessCommands(method.Body);
+                }
+                else
+                {
+                    diagnostics.Add($"Undefined Method <{methodCall.MethodName}>.");
+                }
+
+            }
+            else if(statement.Kind == SyntaxKind.Method)
+            {
+                Method method = (Method)statement;
+                if (_methodMap.ContainsKey(method.MethodName))
+                {
+                    _methodMap[method.MethodName] = method;
+                }
+                else
+                {
+                    _methodMap.Add(method.MethodName, method);
                 }
             }
             else if (statement.Kind == SyntaxKind.WhileStatement)
@@ -130,29 +184,7 @@ namespace gpl
                 WhileStatement whileStatement = (WhileStatement)statement;
                 string variable1 = whileStatement.Variable1;
                 string variable2 = whileStatement.Variable2;
-                int? num1=null, num2=null;
-                if (int.TryParse(variable1, out var var1))
-                {
-                    num1 = var1;
-                }
-                else
-                {
-                    if (_varMap.ContainsKey(variable1))
-                    {
-                        num1 = _varMap[variable1];
-                    }
-                }
-                if (int.TryParse(variable2, out var var2))
-                {
-                    num2 = var2;
-                }
-                else
-                {
-                    if (_varMap.ContainsKey(variable2))
-                    {
-                        num1 = _varMap[variable2];
-                    }
-                }
+                int? num1= EvaluateOperand(variable1), num2=EvaluateOperand(variable2);
 
                 while ((bool)whileStatement.Run((int)num1, (int)num2))
                 {
@@ -162,28 +194,8 @@ namespace gpl
                         ProcessCommand(command);
                     }
 
-                    if (int.TryParse(variable1, out var var11))
-                    {
-                        num1 = var11;
-                    }
-                    else
-                    {
-                        if (_varMap.ContainsKey(variable1))
-                        {
-                            num1 = _varMap[variable1];
-                        }
-                    }
-                    if (int.TryParse(variable2, out var var22))
-                    {
-                        num2 = var22;
-                    }
-                    else
-                    {
-                        if (_varMap.ContainsKey(variable2))
-                        {
-                            num1 = _varMap[variable2];
-                        }
-                    }
+                    num1 = EvaluateOperand(variable1);
+                    num2 = EvaluateOperand(variable2);
                 }
             }
             else
@@ -195,6 +207,22 @@ namespace gpl
                     painter.Paint();
                 }
             }
+        }
+
+        private int? EvaluateOperand(string variable)
+        {
+            if (int.TryParse(variable, out var var))
+            {
+                return var;
+            }
+            else
+            {
+                if (_varMap.ContainsKey(variable))
+                {
+                    return  _varMap[variable];
+                }
+            }
+            return null;
         }
 
         /// <summary>

@@ -25,6 +25,8 @@ namespace gpl.Compiler
         TriangleStatement,
         VariableExpression,
         IfStatement,
-        WhileStatement
+        WhileStatement,
+        Method,
+        MethodCall
     }
 }

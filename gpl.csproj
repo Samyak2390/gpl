@@ -55,6 +55,8 @@
     <Compile Include="Compiler\Syntax\BrushStatementSyntax.cs" />
     <Compile Include="Compiler\Syntax\FillStatementSyntax.cs" />
     <Compile Include="Compiler\Syntax\IfStatementSyntax.cs" />
+    <Compile Include="Compiler\Syntax\Method.cs" />
+    <Compile Include="Compiler\Syntax\MethodCall.cs" />
     <Compile Include="Compiler\Syntax\PenStatementSyntax.cs" />
     <Compile Include="Compiler\Syntax\RectangleStatementSyntax.cs" />
     <Compile Include="Compiler\Syntax\StatementSyntax.cs" />

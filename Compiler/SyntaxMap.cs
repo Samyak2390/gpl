@@ -37,6 +37,7 @@ namespace gpl.Compiler
                 {"run", SyntaxKind.RunStatement },
                 { "if", SyntaxKind.IfStatement},
                 { "while", SyntaxKind.WhileStatement},
+                {"method", SyntaxKind.Method }
             };
         }
 

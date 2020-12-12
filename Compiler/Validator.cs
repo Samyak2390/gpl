@@ -58,9 +58,78 @@ namespace gpl.Compiler
             //checking provided command against listed commands in hash map
             if (_syntaxMap.HasSyntax(_tokens[0].ToLower()))
             {
-                //Finding the type of the command and returning its object with provide parameters as its properties
+                //Finding the type of the command and returning its object with provided parameters as its properties
                 switch (_syntaxMap.GetKind(_tokens[0].ToLower()))
                 {
+                    case SyntaxKind.Method:
+                        try
+                        {
+                            string methodName = "";
+                            string methodBody = "";
+                            //List<string> parameters = new List<string>();
+                            string[] parameters = new string[10];
+
+                            string[] methodTokens = _rawCommand.Split(new string[] { " " }, System.StringSplitOptions.RemoveEmptyEntries);
+                            try
+                            {
+                                //method without params
+                                //TODO have to revise this regex
+                                if (Regex.IsMatch(methodTokens[1], @"^[a-zA-Z]+\([a-zA-Z,]*[a-zA-Z]*\)"))
+                                {
+                                    string temp = "";
+                                    Regex regex = new Regex(@"\((.*)\)");
+                                    Match match = regex.Match(methodTokens[1]);
+                                    if(match.Value.Length > 2)
+                                    {
+                                        string paramString = match.Value.Substring(1, match.Value.Length - 2);
+                                        parameters = paramString.Split(new string[] { "," }, System.StringSplitOptions.RemoveEmptyEntries);
+                                    }
+
+                                    foreach (char c in methodTokens[1])
+                                    {
+                                        if (Regex.IsMatch(c.ToString(), @"[a-zA-Z]"))
+                                        {
+                                            temp += c;
+                                        }
+                                        else
+                                        {
+                                            if (temp.Length >= 1) methodName=temp;
+                                            temp = "";
+                                            break;
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    _diagnostics.Add($"Invalid method declaration at line {_executingLine + 1}");
+                                }
+                            }
+                            catch (IndexOutOfRangeException e)
+                            {
+                                _diagnostics.Add($"method name is expected at line {_executingLine + 1}");
+                            }
+
+                            _executingLine++;
+                            while (_rawLines[_executingLine].Trim().ToLower() != "endmethod")
+                            {
+                                methodBody += _rawLines[_executingLine] + Environment.NewLine;
+                                _executingLine++;
+                                if (_executingLine > _rawLines.Length - 1)
+                                {
+                                    throw new IndexOutOfRangeException();
+                                }
+                            }
+
+                            Form1.executingLine = _executingLine;
+
+                            return new Method(SyntaxKind.Method, methodName, methodBody, parameters);
+                        }
+                        catch (IndexOutOfRangeException e)
+                        {
+                            _diagnostics.Add($"endmethod is expected at line {_executingLine + 1}");
+                        }
+                        
+                        break;
                     case SyntaxKind.WhileStatement:
                         try
                         {
@@ -77,7 +146,7 @@ namespace gpl.Compiler
                             if (_diagnostics.Count > 0) break;
 
                             _executingLine++;
-                            while (_rawLines[_executingLine] != "endloop")
+                            while (_rawLines[_executingLine].Trim().ToLower() != "endloop")
                             {
                                 if (Regex.IsMatch(_rawLines[_executingLine].Replace("\t", ""), @"^[a-zA-Z]+[\s]*="))
                                 {
@@ -88,11 +157,20 @@ namespace gpl.Compiler
                                     body.Add(ParseCommand(_rawLines[_executingLine]));
                                 }
                                 _executingLine++;
+                                if (_executingLine > _rawLines.Length - 1)
+                                {
+                                    throw new IndexOutOfRangeException();
+                                }
                             }
+                            //may need to increment executing line -> no need coz its incremented after process command
                             Form1.executingLine = _executingLine;
 
                             return new WhileStatement(SyntaxKind.WhileStatement, condition, body, _tokens[1], _tokens[2], _tokens[3]);
 
+                        }
+                        catch (IndexOutOfRangeException e)
+                        {
+                            _diagnostics.Add($"endloop is expected at line {_executingLine + 1}");
                         }
                         catch (Exception e)
                         {
@@ -127,19 +205,34 @@ namespace gpl.Compiler
                             else
                             {
                                 _executingLine++;
-                                while (_rawLines[_executingLine] != "endif")
+                                while (_rawLines[_executingLine].Trim().ToLower() != "endif")
                                 {
-                                    body.Add(ParseCommand(_rawLines[_executingLine]));
+                                    //For variable initialization
+                                    if (Regex.IsMatch(_rawLines[_executingLine].Replace("\t", ""), @"^[a-zA-Z]+[\s]*="))
+                                    {
+                                        body.Add(new string[] { _rawLines[_executingLine].Replace("\t", "") });
+                                    }
+                                    else
+                                    {
+                                        body.Add(ParseCommand(_rawLines[_executingLine]));
+                                    }
                                     _executingLine++;
+                                    if(_executingLine > _rawLines.Length-1)
+                                    {
+                                        throw new IndexOutOfRangeException();
+                                    }
                                 }
                                 Form1.executingLine = _executingLine;
-                                //MessageBox.Show(_rawLines[_executingLine]);
-                                //break;
                             }
 
                             return new IfStatementSyntax(SyntaxKind.IfStatement, condition, body);
 
-                        }catch(Exception e)
+                        }
+                        catch(IndexOutOfRangeException e)
+                        {
+                            _diagnostics.Add($"endif is expected at line {_executingLine + 1}"); 
+                        }
+                        catch(Exception e)
                         {
                             //_diagnostics.Add();
                             MessageBox.Show(e.Message);
@@ -340,6 +433,37 @@ namespace gpl.Compiler
                         break;
                 }
             }
+            else if (Regex.IsMatch(_rawCommand, @"^[a-zA-Z]+\([0-9,]*[0-9]*\)"))//check for method call
+            {
+                string methodName = "";
+                string temp = "";
+
+                Regex regex = new Regex(@"\((.*)\)");
+                Match match = regex.Match(_rawCommand);
+                string[] parameters = new string[10];
+                if (match.Value.Length > 2)
+                {
+                    string paramString = match.Value.Substring(1, match.Value.Length - 2);
+                    parameters = paramString.Split(new string[] { "," }, System.StringSplitOptions.RemoveEmptyEntries);
+                }
+
+                foreach (char c in _rawCommand)
+                {
+                    if (Regex.IsMatch(c.ToString(), @"[a-zA-Z]"))
+                    {
+                        temp += c;
+                    }
+                    else
+                    {
+                        if (temp.Length >= 1) methodName = temp;
+                        temp = "";
+                        break;
+                    }
+                }
+
+                return new MethodCall(SyntaxKind.MethodCall, methodName, parameters);
+
+            }
             else if (Regex.IsMatch(_rawCommand, @"^[a-zA-Z]+[\s]*=") && !_commandFound)
             {
                 CheckIfVariable(_rawCommand);
@@ -485,6 +609,7 @@ namespace gpl.Compiler
                 string[] varTokens = rawCommand.Split(new string[] { "=" }, System.StringSplitOptions.RemoveEmptyEntries);
                 string expression = varTokens[1].Trim();
                 string variableName = varTokens[0].Trim();
+                //var = 3
                 if (int.TryParse(expression, out var num)){
                     if (_varMap.ContainsKey(variableName))
                     {
@@ -495,9 +620,9 @@ namespace gpl.Compiler
                         _varMap.Add(variableName, num);
                     }
                 }
+                //var = 3 + (5 * 3)
                 else if(Regex.IsMatch(expression, @"^[^a-zA-Z]+$"))
                 {
-                    bool a = true;
                     int result = Convert.ToInt32(new DataTable().Compute(expression, null));
                     if (_varMap.ContainsKey(variableName))
                     {
@@ -508,6 +633,8 @@ namespace gpl.Compiler
                         _varMap.Add(variableName, result);
                     }
                 }
+                //var = 3
+                //count = var + 3
                 else
                 {
                     List<string> variables = new List<string>();

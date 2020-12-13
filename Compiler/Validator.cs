@@ -37,7 +37,13 @@ namespace gpl.Compiler
         /// <param name="tokens"></param>
         /// <param name="diagnostics"></param>
         /// <param name="rawCommand"></param>
-        public Validator(string[] tokens, ArrayList diagnostics, string rawCommand, Dictionary<string, int> varMap, string[] rawLines, int executingLine)
+        public Validator(
+            string[] tokens, 
+            ArrayList diagnostics,
+            string rawCommand, 
+            Dictionary<string, int> varMap, 
+            string[] rawLines, 
+            int executingLine)
         {
             _tokens = tokens;
             _syntaxMap = SyntaxMap.GetSyntaxMap();

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace gpl.Compiler.Syntax
 {
-    class IfStatementSyntax : StatementSyntax
+    public class IfStatementSyntax : StatementSyntax
     {
         public override SyntaxKind Kind { get; }
         public string[] Condition { get; }

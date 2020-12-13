@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace gpl.Compiler.Syntax
 {
-    class Method : StatementSyntax
+    public class Method : StatementSyntax
     {
         public override SyntaxKind Kind { get; }
         public string MethodName { get; }

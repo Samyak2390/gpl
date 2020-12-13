@@ -11,6 +11,7 @@ namespace gpl.Compiler.Syntax
         public override SyntaxKind Kind { get; }
         public string[] Condition { get; }
         public List<string[]> Body { get; }
+        public int LineNum;
         public bool? Run 
         {
             get
@@ -35,11 +36,12 @@ namespace gpl.Compiler.Syntax
             }
         }
 
-        public IfStatementSyntax(SyntaxKind kind, string[] condition, List<string[]> body)
+        public IfStatementSyntax(SyntaxKind kind, string[] condition, List<string[]> body, int lineNum)
         {
             Kind = kind;
             Condition = condition;
             Body = body;
+            LineNum = lineNum;
         }   
     }
 }

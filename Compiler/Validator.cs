@@ -66,8 +66,8 @@ namespace gpl.Compiler
                         {
                             string methodName = "";
                             string methodBody = "";
-                            //List<string> parameters = new List<string>();
-                            string[] parameters = new string[10];
+                            List<string> parametersList = new List<string>();
+                            string[] parameters = new string[100];
 
                             string[] methodTokens = _rawCommand.Split(new string[] { " " }, System.StringSplitOptions.RemoveEmptyEntries);
                             try
@@ -83,6 +83,10 @@ namespace gpl.Compiler
                                     {
                                         string paramString = match.Value.Substring(1, match.Value.Length - 2);
                                         parameters = paramString.Split(new string[] { "," }, System.StringSplitOptions.RemoveEmptyEntries);
+                                        foreach(string parameter in parameters)
+                                        {
+                                            parametersList.Add(parameter);
+                                        }
                                     }
 
                                     foreach (char c in methodTokens[1])
@@ -101,7 +105,7 @@ namespace gpl.Compiler
                                 }
                                 else
                                 {
-                                    _diagnostics.Add($"Invalid method declaration at line {_executingLine + 1}");
+                                    _diagnostics.Add($"Invalid method declaration at line: {_executingLine + 1}");
                                 }
                             }
                             catch (IndexOutOfRangeException e)
@@ -116,19 +120,23 @@ namespace gpl.Compiler
                                 _executingLine++;
                                 if (_executingLine > _rawLines.Length - 1)
                                 {
-                                    throw new IndexOutOfRangeException();
+                                    throw new InvalidBlockEnd($"endmethod is expected at the end of method block at line: {_executingLine + 1}");
                                 }
                             }
 
                             Form1.executingLine = _executingLine;
 
-                            return new Method(SyntaxKind.Method, methodName, methodBody, parameters);
+                            return new Method(SyntaxKind.Method, methodName, methodBody, parametersList.ToArray());
+                        }
+                        catch (InvalidBlockEnd e)
+                        {
+                            _diagnostics.Add(e.Message);
                         }
                         catch (IndexOutOfRangeException e)
                         {
-                            _diagnostics.Add($"endmethod is expected at line {_executingLine + 1}");
+                            _diagnostics.Add($"Invalid method declaration: condition must be separated with spaces at line: {_executingLine + 1}");
                         }
-                        
+
                         break;
                     case SyntaxKind.WhileStatement:
                         try
@@ -143,10 +151,14 @@ namespace gpl.Compiler
 
                             string[] condition = ValidateCondition(firstValue, _tokens[2], secondValue);
 
-                            if (_diagnostics.Count > 0) break;
+                            if (_diagnostics.Count > 0)
+                            {
+                                Form1.executingLine = _rawLines.Length;
+                                break;
+                            }
 
                             _executingLine++;
-                            while (_rawLines[_executingLine].Trim().ToLower() != "endloop")
+                            while (_rawLines[_executingLine].Trim().ToLower() != "endwhile")
                             {
                                 if (Regex.IsMatch(_rawLines[_executingLine].Replace("\t", ""), @"^[a-zA-Z]+[\s]*="))
                                 {
@@ -159,7 +171,7 @@ namespace gpl.Compiler
                                 _executingLine++;
                                 if (_executingLine > _rawLines.Length - 1)
                                 {
-                                    throw new IndexOutOfRangeException();
+                                    throw new InvalidBlockEnd($"endwhile is expected at the end of while block at line: {_executingLine + 1}");
                                 }
                             }
                             //may need to increment executing line -> no need coz its incremented after process command
@@ -168,9 +180,14 @@ namespace gpl.Compiler
                             return new WhileStatement(SyntaxKind.WhileStatement, condition, body, _tokens[1], _tokens[2], _tokens[3]);
 
                         }
+                        catch (InvalidBlockEnd e)
+                        {
+                            _diagnostics.Add(e.Message);
+                        }
                         catch (IndexOutOfRangeException e)
                         {
-                            _diagnostics.Add($"endloop is expected at line {_executingLine + 1}");
+                            _diagnostics.Add($"Invalid while declaration: condition must be separated with spaces at line: {_executingLine + 1}.");
+                            Form1.executingLine = _rawLines.Length;
                         }
                         catch (Exception e)
                         {
@@ -182,6 +199,7 @@ namespace gpl.Compiler
                         try
                         {
                             List<string[]> body = new List<string[]>();
+                            int lineNum = _executingLine;
 
                             int? value1 = EvaluateVariable(_tokens[1]);
                             int? value2 = EvaluateVariable(_tokens[3]);
@@ -191,7 +209,11 @@ namespace gpl.Compiler
 
                             string[] condition = ValidateCondition(firstValue, _tokens[2], secondValue);
 
-                            if (_diagnostics.Count > 0) break;
+                            if (_diagnostics.Count > 0)
+                            {
+                                Form1.executingLine = _rawLines.Length;
+                                break;
+                            }
 
                             if (_tokens.Length >= 5) //Process for single line if statement
                             {
@@ -219,18 +241,22 @@ namespace gpl.Compiler
                                     _executingLine++;
                                     if(_executingLine > _rawLines.Length-1)
                                     {
-                                        throw new IndexOutOfRangeException();
+                                        throw new InvalidBlockEnd($"endif is expected at the end of if block at line: {_executingLine + 1}.");
                                     }
                                 }
                                 Form1.executingLine = _executingLine;
                             }
 
-                            return new IfStatementSyntax(SyntaxKind.IfStatement, condition, body);
+                            return new IfStatementSyntax(SyntaxKind.IfStatement, condition, body, lineNum);
 
+                        }
+                        catch (InvalidBlockEnd e)
+                        {
+                            _diagnostics.Add(e.Message);
                         }
                         catch(IndexOutOfRangeException e)
                         {
-                            _diagnostics.Add($"endif is expected at line {_executingLine + 1}"); 
+                            _diagnostics.Add($"Invalid if declaration: condition must be separated with spaces at line: {_executingLine + 1}."); 
                         }
                         catch(Exception e)
                         {
@@ -253,7 +279,7 @@ namespace gpl.Compiler
                         }
                         catch (IndexOutOfRangeException e)
                         {
-                            _diagnostics.Add($"Two Parameters required for <{_tokens[0]}>.");
+                            _diagnostics.Add($"Two Parameters required for <{_tokens[0]}> at line: {_executingLine + 1}");
                         }
                         break;
 
@@ -271,7 +297,7 @@ namespace gpl.Compiler
                         }
                         catch (IndexOutOfRangeException e)
                         {
-                            _diagnostics.Add($"Two Parameters required for <{_tokens[0]}>.");
+                            _diagnostics.Add($"Two Parameters required for <{_tokens[0]}> at line: {_executingLine + 1}");
                         }
                         break;
 
@@ -284,18 +310,18 @@ namespace gpl.Compiler
                                 PenStatementSyntax pen = new PenStatementSyntax(SyntaxKind.PenStatement, color);
                                 if(pen.Color == Color.Black)
                                 {
-                                    _diagnostics.Add($"{color} color not found.");
+                                    _diagnostics.Add($"{color} color not found at line: {_executingLine + 1}");
                                 }
                                 return pen;
                             }
                             else
                             {
-                                _diagnostics.Add("Color name must be alphabetic.");
+                                _diagnostics.Add($"Color name must be alphabetic at line: {_executingLine + 1}");
                             }
                         }
                         catch (IndexOutOfRangeException e)
                         {
-                            _diagnostics.Add($"<{_tokens[0]}> requires a color parameter.");
+                            _diagnostics.Add($"<{_tokens[0]}> requires a color parameter at line: {_executingLine + 1}");
                         }
                         break;
 
@@ -315,12 +341,12 @@ namespace gpl.Compiler
                             }
                             else
                             {
-                                _diagnostics.Add("Color name must be alphabetic.");
+                                _diagnostics.Add($"Color name must be alphabetic at line: {_executingLine + 1}");
                             }
                         }
                         catch (IndexOutOfRangeException e)
                         {
-                            _diagnostics.Add($"<{_tokens[0]}> requires a color parameter.");
+                            _diagnostics.Add($"<{_tokens[0]}> requires a color parameter at line: {_executingLine + 1}");
                         }
                         break;
 
@@ -337,17 +363,17 @@ namespace gpl.Compiler
                                 }
                                 else
                                 {
-                                    _diagnostics.Add($"<{_tokens[0]}> requires on/off parameter.");
+                                    _diagnostics.Add($"<{_tokens[0]}> requires on/off parameter at line: {_executingLine + 1}.");
                                 }
                             }
                             else
                             {
-                                _diagnostics.Add($"<{_tokens[0]}> requires on/off parameter.");
+                                _diagnostics.Add($"<{_tokens[0]}> requires on/off parameter at line: {_executingLine + 1}.");
                             }
                         }
                         catch (IndexOutOfRangeException e)
                         {
-                            _diagnostics.Add($"<{_tokens[0]}> requires on/off parameter.");
+                            _diagnostics.Add($"<{_tokens[0]}> requires on/off parameter at line: {_executingLine + 1}.");
                         }
                         break;
 
@@ -365,7 +391,7 @@ namespace gpl.Compiler
                         }
                         catch (IndexOutOfRangeException e)
                         {
-                            _diagnostics.Add($"Two Parameters required for <{_tokens[0]}>.");
+                            _diagnostics.Add($"Two Parameters required for <{_tokens[0]}> at line: {_executingLine + 1}");
                         }
                         break;
 
@@ -389,12 +415,12 @@ namespace gpl.Compiler
                             }
                             catch (FormatException e)
                             {
-                                _diagnostics.Add($"Radius must be integer. <{radius}> given.");
+                                _diagnostics.Add($"Radius must be integer. <{radius}> given at line: {_executingLine + 1}");
                             }
                         }
                         catch (IndexOutOfRangeException e)
                         {
-                            _diagnostics.Add($"Radius Parameters required for <{_tokens[0]}>.");
+                            _diagnostics.Add($"Radius Parameters required for <{_tokens[0]}> at line: {_executingLine + 1}");
                         }
                         break;
 
@@ -428,7 +454,7 @@ namespace gpl.Compiler
                         }
                         catch(IndexOutOfRangeException e)
                         {
-                            _diagnostics.Add($"Six integer Parameters required for <{_tokens[0]}>.");
+                            _diagnostics.Add($"Six integer Parameters required for <{_tokens[0]}> at line: {_executingLine + 1}");
                         }
                         break;
                 }
@@ -440,11 +466,16 @@ namespace gpl.Compiler
 
                 Regex regex = new Regex(@"\((.*)\)");
                 Match match = regex.Match(_rawCommand);
-                string[] parameters = new string[10];
+                List<string> parametersList = new List<string>();
+                string[] parameters = new string[100];
                 if (match.Value.Length > 2)
                 {
                     string paramString = match.Value.Substring(1, match.Value.Length - 2);
                     parameters = paramString.Split(new string[] { "," }, System.StringSplitOptions.RemoveEmptyEntries);
+                    foreach (string parameter in parameters)
+                    {
+                        parametersList.Add(parameter);
+                    }
                 }
 
                 foreach (char c in _rawCommand)
@@ -461,7 +492,7 @@ namespace gpl.Compiler
                     }
                 }
 
-                return new MethodCall(SyntaxKind.MethodCall, methodName, parameters);
+                return new MethodCall(SyntaxKind.MethodCall, methodName, parametersList.ToArray());
 
             }
             else if (Regex.IsMatch(_rawCommand, @"^[a-zA-Z]+[\s]*=") && !_commandFound)
@@ -470,7 +501,7 @@ namespace gpl.Compiler
             }
             else
             {
-                _diagnostics.Add($"Command <{_tokens[0]}> doesn't exist.");
+                _diagnostics.Add($"Command <{_tokens[0]}> doesn't exist at line: {_executingLine + 1}");
             }
             return new BadSyntax();
         }
@@ -508,7 +539,7 @@ namespace gpl.Compiler
             }
             else
             {
-                _diagnostics.Add(firstValue + " should be integer");
+                _diagnostics.Add(firstValue + $" should be integer at line: {_executingLine + 1}");
             }
 
             if (compareOperator == "<=" || compareOperator == "==" || compareOperator == ">=" || compareOperator == ">" || compareOperator == "<" || compareOperator == "!=")
@@ -517,7 +548,7 @@ namespace gpl.Compiler
             }
             else
             {
-                _diagnostics.Add(compareOperator + " is invalid Conditional Operator.");
+                _diagnostics.Add(compareOperator + $" is invalid Conditional Operator at line: {_executingLine + 1}");
             }
 
             if (int.TryParse(secondValue, out var valuee))
@@ -526,7 +557,7 @@ namespace gpl.Compiler
             }
             else
             {
-                _diagnostics.Add(secondValue + "should be integer");
+                _diagnostics.Add(secondValue + $" should be integer at line: {_executingLine + 1}");
             }
             return condition.ToArray();
         }
@@ -541,7 +572,7 @@ namespace gpl.Compiler
                 }
                 catch (KeyNotFoundException e)
                 {
-                    _diagnostics.Add($"Undefined Variable: {_tokens[1]}");
+                    _diagnostics.Add($"Undefined Variable: {variable} at line: {_executingLine + 1}");
                 }
             }
             return null;
@@ -570,7 +601,7 @@ namespace gpl.Compiler
             }
             catch (FormatException error)
             {
-                _diagnostics.Add($"<{_tokens[1]}> and <{_tokens[2]}> must be integers");
+                _diagnostics.Add($"<{_tokens[1]}> and <{_tokens[2]}> must be integers at line: {_executingLine + 1}");
             }
            
             return point;
@@ -597,7 +628,7 @@ namespace gpl.Compiler
             }
             catch (FormatException error)
             {
-                _diagnostics.Add($"<{X}> and <{Y}> must be integers");
+                _diagnostics.Add($"<{X}> and <{Y}> must be integers at line: {_executingLine + 1}");
             }
             return new Point();
         }
@@ -669,7 +700,7 @@ namespace gpl.Compiler
                             }
                             else
                             {
-                                _diagnostics.Add($"Undefined variable: {variable}.");
+                                _diagnostics.Add($"Undefined variable: {variable} at line: {_executingLine + 1}.");
                             }
                         }
 
@@ -692,11 +723,11 @@ namespace gpl.Compiler
             }
             catch (EvaluateException e)
             {
-                _diagnostics.Add("Invalid Expression." );
+                _diagnostics.Add($"Invalid Expression at line: {_executingLine + 1}.");
             }
             catch(SyntaxErrorException error)
             {
-                _diagnostics.Add($"Invalid Syntax: <{rawCommand}> for variable initialization.");
+                _diagnostics.Add($"Invalid Syntax: <{rawCommand}> for variable initialization at line: {_executingLine + 1}.");
             }
         }
 

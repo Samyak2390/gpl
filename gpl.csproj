@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Compiler\InvalidBlockEnd.cs" />
     <Compile Include="Compiler\SyntaxMap.cs" />
     <Compile Include="Compiler\SyntaxKind.cs" />
     <Compile Include="Compiler\Syntax\BadSyntax.cs" />

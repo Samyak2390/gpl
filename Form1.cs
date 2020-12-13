@@ -128,6 +128,7 @@ namespace gpl
                 IfStatementSyntax ifStatement = (IfStatementSyntax)statement;
                 if (ifStatement.Run != null && (bool)ifStatement.Run)
                 {
+                    //executingLine = ifStatement.LineNum;
                     foreach(string[] command in ifStatement.Body)
                     {
                         if (command.Length == 1) rawCommand = command[0];
@@ -143,21 +144,24 @@ namespace gpl
                     Method method = _methodMap[methodCall.MethodName];
                     if(method.Parameters.Length == methodCall.Parameters.Length)
                     {
-                        for (int i = 0; i< method.Parameters.Length; i++)
+                        if(method.Parameters.Length != 0)
                         {
-                            if (_varMap.ContainsKey(method.Parameters[i]))
+                            for (int i = 0; i < method.Parameters.Length; i++)
                             {
-                                _varMap[method.Parameters[i]] = Convert.ToInt32(methodCall.Parameters[i]);
-                            }
-                            else
-                            {
-                                _varMap.Add(method.Parameters[i], Convert.ToInt32(methodCall.Parameters[i]));
+                                if (_varMap.ContainsKey(method.Parameters[i]))
+                                {
+                                    _varMap[method.Parameters[i]] = Convert.ToInt32(methodCall.Parameters[i]);
+                                }
+                                else
+                                {
+                                    _varMap.Add(method.Parameters[i], Convert.ToInt32(methodCall.Parameters[i]));
+                                }
                             }
                         }
                     }
                     else
                     {
-                        diagnostics.Add($"Unequal no. of parameters in  <{methodCall.MethodName}> and <{method.MethodName}>.");
+                        diagnostics.Add($"Unequal no. of parameters in declaration and call of method <{methodCall.MethodName}>.");
                     }
                     ProcessCommands(method.Body);
                 }

@@ -11,8 +11,19 @@ namespace gpl.Compiler.Syntax
     /// </summary>
     public class RectangleStatementSyntax : StatementSyntax
     {
+        /// <summary>
+        /// Kind of the syntax.
+        /// </summary>
         public override SyntaxKind Kind { get; }
+
+        /// <summary>
+        /// Width of the rectangle.
+        /// </summary>
         public int Width { get; }
+
+        /// <summary>
+        /// Height of the rectangle.
+        /// </summary>
         public int Height { get; }
 
         /// <summary>

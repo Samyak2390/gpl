@@ -11,7 +11,15 @@ namespace gpl.Compiler.Syntax
     /// </summary>
     public class CircleStatementSyntax : StatementSyntax
     {
+        /// <summary>
+        /// Kind of the syntax.
+        /// </summary>
         public override SyntaxKind Kind { get; }
+
+        /// <summary>
+        /// Length denoting Width and Height of a square in which 
+        /// circle is made.
+        /// </summary>
         public int Radius { get; }
 
         /// <summary>

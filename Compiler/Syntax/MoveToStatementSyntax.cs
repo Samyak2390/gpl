@@ -11,7 +11,14 @@ namespace gpl.Compiler.Syntax
     /// </summary>
     public class MoveToStatementSyntax : StatementSyntax
     {
+        /// <summary>
+        /// Kind of the syntax.
+        /// </summary>
         public override SyntaxKind Kind { get; }
+
+        /// <summary>
+        /// Destination co-ordinate for the pen position.
+        /// </summary>
         public int [] Point {get; }
 
         /// <summary>

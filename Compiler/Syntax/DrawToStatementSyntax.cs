@@ -11,7 +11,15 @@ namespace gpl.Compiler.Syntax
     /// </summary>
     public class DrawToStatementSyntax : StatementSyntax
     {
+        /// <summary>
+        /// Kind of the syntax.
+        /// </summary>
         public override SyntaxKind Kind { get; }
+
+        /// <summary>
+        /// Point with x and y co-ordinate upto which a straight line is drawn
+        /// from current point.
+        /// </summary>
         public int [] Point {get; }
         /// <summary>
         /// Constructor that initializes the command's parameters.

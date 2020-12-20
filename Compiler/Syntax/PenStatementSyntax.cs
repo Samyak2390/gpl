@@ -12,6 +12,9 @@ namespace gpl.Compiler.Syntax
     /// </summary>
     class PenStatementSyntax : StatementSyntax
     {
+        /// <summary>
+        /// Kind of the syntax.
+        /// </summary>
         public override SyntaxKind Kind { get; }
         public Color Color { get; }
         private readonly Dictionary<string, Color> ColorMap;

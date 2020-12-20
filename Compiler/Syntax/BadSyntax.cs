@@ -11,6 +11,9 @@ namespace gpl.Compiler.Syntax
     /// </summary>
     public class BadSyntax : StatementSyntax
     {
+        /// <summary>
+        /// Kind of the syntax
+        /// </summary>
         public override SyntaxKind Kind { get; }
 
         /// <summary>

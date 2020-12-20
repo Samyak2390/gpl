@@ -4,6 +4,17 @@
         <name>gpl</name>
     </assembly>
     <members>
+        <member name="T:gpl.Compiler.InvalidBlockEnd">
+            <summary>
+            Custom Exception that is thrown when the block of statement is invalid or not found.
+            </summary>
+        </member>
+        <member name="M:gpl.Compiler.InvalidBlockEnd.#ctor(System.String)">
+            <summary>
+            Error message.
+            </summary>
+            <param name="message">Error message.</param>
+        </member>
         <member name="T:gpl.Compiler.SyntaxMap">
             <summary>
             Singleton class that initializes the hashmap storing key value pair of 
@@ -40,9 +51,99 @@
             Enum type enumerating the type of available commands.
             </summary>
         </member>
+        <member name="F:gpl.Compiler.SyntaxKind.BadSyntax">
+            <summary>
+            syntax kind for invalid syntax
+            </summary>
+        </member>
+        <member name="F:gpl.Compiler.SyntaxKind.MoveToStatement">
+            <summary>
+            syntax kind for moveto statement
+            </summary>
+        </member>
+        <member name="F:gpl.Compiler.SyntaxKind.DrawToStatement">
+            <summary>
+            syntax kind for drawto statement
+            </summary>
+        </member>
+        <member name="F:gpl.Compiler.SyntaxKind.ResetStatement">
+            <summary>
+            syntax kind for reset command
+            </summary>
+        </member>
+        <member name="F:gpl.Compiler.SyntaxKind.ClearStatement">
+            <summary>
+            syntax kind for clear command
+            </summary>
+        </member>
+        <member name="F:gpl.Compiler.SyntaxKind.PenStatement">
+            <summary>
+            syntax kind for pen command
+            </summary>
+        </member>
+        <member name="F:gpl.Compiler.SyntaxKind.BrushStatement">
+            <summary>
+            syntax kind for brush command
+            </summary>
+        </member>
+        <member name="F:gpl.Compiler.SyntaxKind.FillStatement">
+            <summary>
+            syntax kind for fill command
+            </summary>
+        </member>
+        <member name="F:gpl.Compiler.SyntaxKind.RectangleStatement">
+            <summary>
+            syntax kind for rect command
+            </summary>
+        </member>
+        <member name="F:gpl.Compiler.SyntaxKind.RunStatement">
+            <summary>
+            syntax kind for run command
+            </summary>
+        </member>
+        <member name="F:gpl.Compiler.SyntaxKind.CircleStatement">
+            <summary>
+            syntax kind for circle command
+            </summary>
+        </member>
+        <member name="F:gpl.Compiler.SyntaxKind.TriangleStatement">
+            <summary>
+            syntax kind for triangle command
+            </summary>
+        </member>
+        <member name="F:gpl.Compiler.SyntaxKind.VariableExpression">
+            <summary>
+            syntax kind for variable initialization
+            </summary>
+        </member>
+        <member name="F:gpl.Compiler.SyntaxKind.IfStatement">
+            <summary>
+            syntax kind for if statement
+            </summary>
+        </member>
+        <member name="F:gpl.Compiler.SyntaxKind.WhileStatement">
+            <summary>
+            syntax kind for while statement
+            </summary>
+        </member>
+        <member name="F:gpl.Compiler.SyntaxKind.Method">
+            <summary>
+            syntax kind for method declaration
+            </summary>
+        </member>
+        <member name="F:gpl.Compiler.SyntaxKind.MethodCall">
+            <summary>
+            syntax kind for method call
+            </summary>
+        </member>
         <member name="T:gpl.Compiler.Syntax.BadSyntax">
             <summary>
             Class that represents all the syntax that are not valid.
+            </summary>
+        </member>
+        <member name="P:gpl.Compiler.Syntax.BadSyntax.Kind">
+            <summary>
+            Kind of the syntax
             </summary>
         </member>
         <member name="M:gpl.Compiler.Syntax.BadSyntax.#ctor">
@@ -53,6 +154,17 @@
         <member name="T:gpl.Compiler.Syntax.CircleStatementSyntax">
             <summary>
             Class representing the syntax of circle command.
+            </summary>
+        </member>
+        <member name="P:gpl.Compiler.Syntax.CircleStatementSyntax.Kind">
+            <summary>
+            Kind of the syntax.
+            </summary>
+        </member>
+        <member name="P:gpl.Compiler.Syntax.CircleStatementSyntax.Radius">
+            <summary>
+            Length denoting Width and Height of a square in which 
+            circle is made.
             </summary>
         </member>
         <member name="M:gpl.Compiler.Syntax.CircleStatementSyntax.#ctor(gpl.Compiler.SyntaxKind,System.Int32)">
@@ -67,6 +179,17 @@
             Class representing the syntax of drawto command
             </summary>
         </member>
+        <member name="P:gpl.Compiler.Syntax.DrawToStatementSyntax.Kind">
+            <summary>
+            Kind of the syntax.
+            </summary>
+        </member>
+        <member name="P:gpl.Compiler.Syntax.DrawToStatementSyntax.Point">
+            <summary>
+            Point with x and y co-ordinate upto which a straight line is drawn
+            from current point.
+            </summary>
+        </member>
         <member name="M:gpl.Compiler.Syntax.DrawToStatementSyntax.#ctor(gpl.Compiler.SyntaxKind,System.Int32[])">
             <summary>
             Constructor that initializes the command's parameters.
@@ -77,6 +200,16 @@
         <member name="T:gpl.Compiler.Syntax.BrushStatementSyntax">
             <summary>
             Class representing the brush command.
+            </summary>
+        </member>
+        <member name="P:gpl.Compiler.Syntax.BrushStatementSyntax.Kind">
+            <summary>
+            Kind of the syntax.
+            </summary>
+        </member>
+        <member name="P:gpl.Compiler.Syntax.BrushStatementSyntax.Color">
+            <summary>
+            Color of the brush.
             </summary>
         </member>
         <member name="M:gpl.Compiler.Syntax.BrushStatementSyntax.#ctor(gpl.Compiler.SyntaxKind,System.String)">
@@ -98,6 +231,16 @@
             Class representing the syntax of fill command.
             </summary>
         </member>
+        <member name="P:gpl.Compiler.Syntax.FillStatementSyntax.Kind">
+            <summary>
+            Kind of the Syntax
+            </summary>
+        </member>
+        <member name="P:gpl.Compiler.Syntax.FillStatementSyntax.State">
+            <summary>
+            On/Off state of fill.
+            </summary>
+        </member>
         <member name="M:gpl.Compiler.Syntax.FillStatementSyntax.#ctor(gpl.Compiler.SyntaxKind,System.String)">
             <summary>
             Constructor initializing the command's parameters.
@@ -105,9 +248,115 @@
             <param name="kind">Syntax kind.</param>
             <param name="state">On or Off state of Fill command</param>
         </member>
+        <member name="T:gpl.Compiler.Syntax.IfStatementSyntax">
+            <summary>
+            Class representing If statement.
+            </summary>
+        </member>
+        <member name="P:gpl.Compiler.Syntax.IfStatementSyntax.Kind">
+            <summary>
+            Kind of syntax
+            </summary>
+        </member>
+        <member name="P:gpl.Compiler.Syntax.IfStatementSyntax.Condition">
+            <summary>
+            Array containing the condition of if statement.
+            </summary>
+        </member>
+        <member name="P:gpl.Compiler.Syntax.IfStatementSyntax.Body">
+            <summary>
+            Array of strings containing commands between if block.
+            </summary>
+        </member>
+        <member name="F:gpl.Compiler.Syntax.IfStatementSyntax.LineNum">
+            <summary>
+            Line number of if statement
+            </summary>
+        </member>
+        <member name="P:gpl.Compiler.Syntax.IfStatementSyntax.Run">
+            <summary>
+            Property that returns if condition is true or false.
+            </summary>
+        </member>
+        <member name="M:gpl.Compiler.Syntax.IfStatementSyntax.#ctor(gpl.Compiler.SyntaxKind,System.String[],System.Collections.Generic.List{System.String[]},System.Int32)">
+            <summary>
+            Constructor that initializes the default properties of If statement.
+            </summary>
+            <param name="kind">Kind of syntax.</param>
+            <param name="condition">Condition of If statement.</param>
+            <param name="body">Commands between if block</param>
+            <param name="lineNum">Line number of if statement.</param>
+        </member>
+        <member name="T:gpl.Compiler.Syntax.Method">
+            <summary>
+            Class representing the method
+            </summary>
+        </member>
+        <member name="P:gpl.Compiler.Syntax.Method.Kind">
+            <summary>
+            Type of syntax
+            </summary>
+        </member>
+        <member name="P:gpl.Compiler.Syntax.Method.MethodName">
+            <summary>
+            Name of the method.
+            </summary>
+        </member>
+        <member name="P:gpl.Compiler.Syntax.Method.Body">
+            <summary>
+            Commands inside the method block.
+            </summary>
+        </member>
+        <member name="P:gpl.Compiler.Syntax.Method.Parameters">
+            <summary>
+            Parameter variables for Method.
+            </summary>
+        </member>
+        <member name="M:gpl.Compiler.Syntax.Method.#ctor(gpl.Compiler.SyntaxKind,System.String,System.String,System.String[])">
+            <summary>
+            Constructor that initializes default properties of Method.
+            </summary>
+            <param name="kind">Kind of the syntax.</param>
+            <param name="methodName">Name of the method.</param>
+            <param name="body">Commands between the method block</param>
+            <param name="parameters">Parameter variables for method</param>
+        </member>
+        <member name="T:gpl.Compiler.Syntax.MethodCall">
+            <summary>
+            Class representing the syntax of method call.
+            </summary>
+        </member>
+        <member name="P:gpl.Compiler.Syntax.MethodCall.Kind">
+            <summary>
+            Kind of the syntax.
+            </summary>
+        </member>
+        <member name="P:gpl.Compiler.Syntax.MethodCall.MethodName">
+            <summary>
+            Name of the method.
+            </summary>
+        </member>
+        <member name="P:gpl.Compiler.Syntax.MethodCall.Parameters">
+            <summary>
+            Integer parameters of the method.
+            </summary>
+        </member>
+        <member name="M:gpl.Compiler.Syntax.MethodCall.#ctor(gpl.Compiler.SyntaxKind,System.String,System.String[])">
+            <summary>
+            Constructor that initializes the default properties for the class.
+            </summary>
+            <param name="kind">Kind of the syntax.</param>
+            <param name="methodName">Name of the method.</param>
+            <param name="parameters">Integer parameters for the method.</param>
+        </member>
         <member name="T:gpl.Compiler.Syntax.PenStatementSyntax">
             <summary>
             Class representing the pen command.
+            </summary>
+        </member>
+        <member name="P:gpl.Compiler.Syntax.PenStatementSyntax.Kind">
+            <summary>
+            Kind of the syntax.
             </summary>
         </member>
         <member name="M:gpl.Compiler.Syntax.PenStatementSyntax.#ctor(gpl.Compiler.SyntaxKind,System.String)">
@@ -129,6 +378,21 @@
             Class representing the rectangle command.
             </summary>
         </member>
+        <member name="P:gpl.Compiler.Syntax.RectangleStatementSyntax.Kind">
+            <summary>
+            Kind of the syntax.
+            </summary>
+        </member>
+        <member name="P:gpl.Compiler.Syntax.RectangleStatementSyntax.Width">
+            <summary>
+            Width of the rectangle.
+            </summary>
+        </member>
+        <member name="P:gpl.Compiler.Syntax.RectangleStatementSyntax.Height">
+            <summary>
+            Height of the rectangle.
+            </summary>
+        </member>
         <member name="M:gpl.Compiler.Syntax.RectangleStatementSyntax.#ctor(gpl.Compiler.SyntaxKind,System.Int32[])">
             <summary>
             Constructor initializing the rectangle command's parameters.
@@ -141,9 +405,24 @@
             Abstract class representing all syntax commands with common property Kind.
             </summary>
         </member>
+        <member name="P:gpl.Compiler.Syntax.StatementSyntax.Kind">
+            <summary>
+            Kind of the syntax.
+            </summary>
+        </member>
         <member name="T:gpl.Compiler.Syntax.MoveToStatementSyntax">
             <summary>
             Class representing the move to command.
+            </summary>
+        </member>
+        <member name="P:gpl.Compiler.Syntax.MoveToStatementSyntax.Kind">
+            <summary>
+            Kind of the syntax.
+            </summary>
+        </member>
+        <member name="P:gpl.Compiler.Syntax.MoveToStatementSyntax.Point">
+            <summary>
+            Destination co-ordinate for the pen position.
             </summary>
         </member>
         <member name="M:gpl.Compiler.Syntax.MoveToStatementSyntax.#ctor(gpl.Compiler.SyntaxKind,System.Int32[])">
@@ -158,12 +437,76 @@
             Class representing the syntax of triangle command.
             </summary>
         </member>
+        <member name="P:gpl.Compiler.Syntax.TriangleStatementSyntax.Kind">
+            <summary>
+            Kind of the syntax.
+            </summary>
+        </member>
+        <member name="P:gpl.Compiler.Syntax.TriangleStatementSyntax.Vertices">
+            <summary>
+            Three co-ordinates that makes three vertices of triangle.
+            </summary>
+        </member>
         <member name="M:gpl.Compiler.Syntax.TriangleStatementSyntax.#ctor(gpl.Compiler.SyntaxKind,System.Drawing.Point[])">
             <summary>
             Constructor initializing triangle command's parameters
             </summary>
             <param name="kind">Syntax kind</param>
             <param name="vertices">Array of three vertices as Point</param>
+        </member>
+        <member name="T:gpl.Compiler.Syntax.WhileStatement">
+            <summary>
+            Class representing the syntax of while statement.
+            </summary>
+        </member>
+        <member name="P:gpl.Compiler.Syntax.WhileStatement.Kind">
+            <summary>
+            Kind of the syntax.
+            </summary>
+        </member>
+        <member name="P:gpl.Compiler.Syntax.WhileStatement.Condition">
+            <summary>
+            Condition required to execute the while statement.
+            </summary>
+        </member>
+        <member name="P:gpl.Compiler.Syntax.WhileStatement.Variable1">
+            <summary>
+            Left operand in the condition.
+            </summary>
+        </member>
+        <member name="P:gpl.Compiler.Syntax.WhileStatement.CompareOperator">
+            <summary>
+            The comparison operator.
+            </summary>
+        </member>
+        <member name="P:gpl.Compiler.Syntax.WhileStatement.Variable2">
+            <summary>
+            Right operand of the condition.
+            </summary>
+        </member>
+        <member name="P:gpl.Compiler.Syntax.WhileStatement.Body">
+            <summary>
+            Command inside the while block.
+            </summary>
+        </member>
+        <member name="M:gpl.Compiler.Syntax.WhileStatement.Run(System.Int32,System.Int32)">
+            <summary>
+            Method that returns true/false after checking the condition.
+            </summary>
+            <param name="var1">left operand integer.</param>
+            <param name="var2">right operand integer.</param>
+            <returns></returns>
+        </member>
+        <member name="M:gpl.Compiler.Syntax.WhileStatement.#ctor(gpl.Compiler.SyntaxKind,System.String[],System.Collections.Generic.List{System.String[]},System.String,System.String,System.String)">
+            <summary>
+            Constructor that initializes the properties for this class.
+            </summary>
+            <param name="kind">kind of statement.</param>
+            <param name="condition">Condition of while statement.</param>
+            <param name="body">Commands between the while block.</param>
+            <param name="var1">Left integer operand.</param>
+            <param name="compareOperator">Comparison operator.</param>
+            <param name="var2">Right integer operand.</param>
         </member>
         <member name="T:gpl.Compiler.Validator">
             <summary>
@@ -181,9 +524,12 @@
             Constructor that initializes mappings of available commands and their types,
             along with the passed reference of diagnostics and array of command.
             </summary>
-            <param name="tokens"></param>
-            <param name="diagnostics"></param>
-            <param name="rawCommand"></param>
+            <param name="tokens">Parsed tokens of command that is being executed.</param>
+            <param name="diagnostics">Arraylist that stores all the errors that occured.</param>
+            <param name="rawCommand">string of line of command being executed</param>
+            <param name="varMap">Hashmap of vairable names and their values</param>
+            <param name="rawLines">array of strings of lines of commands</param>
+            <param name="executingLine">Line number that is being executed</param>
         </member>
         <member name="M:gpl.Compiler.Validator.Validate">
             <summary>

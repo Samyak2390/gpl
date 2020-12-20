@@ -12,7 +12,14 @@ namespace gpl.Compiler.Syntax
     /// </summary>
     class BrushStatementSyntax : StatementSyntax
     {
+        /// <summary>
+        /// Kind of the syntax.
+        /// </summary>
         public override SyntaxKind Kind { get; }
+
+        /// <summary>
+        /// Color of the brush.
+        /// </summary>
         public Color Color { get; }
         private readonly Dictionary<string, Color> ColorMap;
 

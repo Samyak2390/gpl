@@ -34,9 +34,13 @@ namespace gpl.Compiler
         /// Constructor that initializes mappings of available commands and their types,
         /// along with the passed reference of diagnostics and array of command.
         /// </summary>
-        /// <param name="tokens"></param>
-        /// <param name="diagnostics"></param>
-        /// <param name="rawCommand"></param>
+        /// <param name="tokens">Parsed tokens of command that is being executed.</param>
+        /// <param name="diagnostics">Arraylist that stores all the errors that occured.</param>
+        /// <param name="rawCommand">string of line of command being executed</param>
+        /// <param name="varMap">Hashmap of vairable names and their values</param>
+        /// <param name="rawLines">array of strings of lines of commands</param>
+        /// <param name="executingLine">Line number that is being executed</param>
+    
         public Validator(
             string[] tokens, 
             ArrayList diagnostics,
@@ -78,8 +82,8 @@ namespace gpl.Compiler
                             string[] methodTokens = _rawCommand.Split(new string[] { " " }, System.StringSplitOptions.RemoveEmptyEntries);
                             try
                             {
-                                //method without params
-                                //TODO have to revise this regex
+                                //Validate method name and store it to variable
+                                //Validate if the method has parameters and add it to list
                                 if (Regex.IsMatch(methodTokens[1], @"^[a-zA-Z]+\([a-zA-Z,]*[a-zA-Z]*\)"))
                                 {
                                     string temp = "";
@@ -119,6 +123,8 @@ namespace gpl.Compiler
                                 _diagnostics.Add($"method name is expected at line {_executingLine + 1}");
                             }
 
+                            //loop through lines until the end of method 
+                            //add these lines to the body of the method
                             _executingLine++;
                             while (_rawLines[_executingLine].Trim().ToLower() != "endmethod")
                             {
@@ -149,23 +155,28 @@ namespace gpl.Compiler
                         {
                             List<string[]> body = new List<string[]>();
 
+                            //check if the condition of while statement has vairables
                             int? value1 = EvaluateVariable(_tokens[1]);
                             int? value2 = EvaluateVariable(_tokens[3]);
 
+                            //if not use the given integer
                             string firstValue = value1 == null ? _tokens[1] : value1.ToString();
                             string secondValue = value2 == null ? _tokens[3] : value2.ToString();
 
                             string[] condition = ValidateCondition(firstValue, _tokens[2], secondValue);
 
+                            //if error found, change th executing line to last line to stop execution
                             if (_diagnostics.Count > 0)
                             {
                                 Form1.executingLine = _rawLines.Length;
                                 break;
                             }
 
+                            //add commands between while...endwhile inside body
                             _executingLine++;
                             while (_rawLines[_executingLine].Trim().ToLower() != "endwhile")
                             {
+                                //if the line is variable iniialization
                                 if (Regex.IsMatch(_rawLines[_executingLine].Replace("\t", ""), @"^[a-zA-Z]+[\s]*="))
                                 {
                                     body.Add(new string[] { _rawLines[_executingLine].Replace("\t", "") });
@@ -180,7 +191,7 @@ namespace gpl.Compiler
                                     throw new InvalidBlockEnd($"endwhile is expected at the end of while block at line: {_executingLine + 1}");
                                 }
                             }
-                            //may need to increment executing line -> no need coz its incremented after process command
+                            
                             Form1.executingLine = _executingLine;
 
                             return new WhileStatement(SyntaxKind.WhileStatement, condition, body, _tokens[1], _tokens[2], _tokens[3]);
@@ -207,21 +218,25 @@ namespace gpl.Compiler
                             List<string[]> body = new List<string[]>();
                             int lineNum = _executingLine;
 
+                            //check if the condition of if statement has vairables
                             int? value1 = EvaluateVariable(_tokens[1]);
                             int? value2 = EvaluateVariable(_tokens[3]);
 
+                            //if not use the given integer
                             string firstValue = value1 == null ? _tokens[1] : value1.ToString();
                             string secondValue = value2 == null ? _tokens[3] : value2.ToString();
 
                             string[] condition = ValidateCondition(firstValue, _tokens[2], secondValue);
 
+                            //if error found, change th executing line to last line to stop execution
                             if (_diagnostics.Count > 0)
                             {
                                 Form1.executingLine = _rawLines.Length;
                                 break;
                             }
 
-                            if (_tokens.Length >= 5) //Process for single line if statement
+                            //Execute for single line if statement
+                            if (_tokens.Length >= 5) 
                             {
                                 List<string> tempStatement = new List<string>();
                                 for(int i = 4; i<_tokens.Length; i++)
@@ -230,8 +245,10 @@ namespace gpl.Compiler
                                 }
                                 body.Add(tempStatement.ToArray());
                             }
+                            //For if block 
                             else
                             {
+                                //add commands inside if..endif to body of if statement
                                 _executingLine++;
                                 while (_rawLines[_executingLine].Trim().ToLower() != "endif")
                                 {

@@ -11,6 +11,9 @@ namespace gpl.Compiler.Syntax
     /// </summary>
     public abstract class StatementSyntax
     {
+        /// <summary>
+        /// Kind of the syntax.
+        /// </summary>
         public abstract SyntaxKind Kind { get; }
     }
 }

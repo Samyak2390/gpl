@@ -28,6 +28,10 @@ namespace gpl
         const int DEFAULT_COORDINATE = 0;
         string rawCommand;
         string[] rawLines;
+
+        /// <summary>
+        /// index of line that is executing
+        /// </summary>
         public static int executingLine { get; set; }
         Dictionary<string, int> _varMap = new Dictionary<string, int>();
         Dictionary<string, Method> _methodMap = new Dictionary<string, Method>();
@@ -128,7 +132,6 @@ namespace gpl
                 IfStatementSyntax ifStatement = (IfStatementSyntax)statement;
                 if (ifStatement.Run != null && (bool)ifStatement.Run)
                 {
-                    //executingLine = ifStatement.LineNum;
                     foreach(string[] command in ifStatement.Body)
                     {
                         if (command.Length == 1) rawCommand = command[0];

@@ -11,7 +11,14 @@ namespace gpl.Compiler.Syntax
     /// </summary>
     class FillStatementSyntax : StatementSyntax
     {
+        /// <summary>
+        /// Kind of the Syntax
+        /// </summary>
         public override SyntaxKind Kind {get;}
+
+        /// <summary>
+        /// On/Off state of fill.
+        /// </summary>
         public bool State { get; }
 
         /// <summary>
